@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Darren Cohen - My Favorite Links</title>
+    <!-- Tailwind CSS CDN for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Font: Inter for a modern look -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Apply Inter font globally */
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+    <!-- Your custom style.css (if any) -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-gray-100 min-h-screen flex flex-col items-center p-4">
+
+    <!-- Header for the links page -->
+    <header class="w-full max-w-2xl text-center mb-8">
+        <h1 class="text-4xl font-extrabold text-gray-900 mt-8 mb-4">My Favorite Links</h1>
+        <p class="text-xl text-gray-700">A collection of resources, tools, and inspirations I love.</p>
+        <a href="index.html" class="inline-flex items-center mt-6 px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-300 ease-in-out">
+            <svg class="h-5 w-5 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd"></path></svg>
+            Back to Profile
+        </a>
+    </header>
+
+    <!-- Section: My Favorite Links -->
+    <div class="p-8 bg-white rounded-xl shadow-xl w-full max-w-2xl mb-8">
+        <div id="links-container" class="space-y-6">
+            <!-- Links will be loaded here dynamically by JavaScript -->
+            <p id="loading-message" class="text-center text-gray-500">Loading links from Google Sheet...</p>
+        </div>
+        <p id="error-message" class="text-center text-red-500 mt-4 hidden">Failed to load links. Please ensure the Google Sheet is published correctly and the URL is valid.</p>
+    </div>
+
+    <script>
+        // *** IMPORTANT: Replace this with YOUR Google Sheet's published CSV URL ***
+        // How to get this URL:
+        // 1. Create a Google Sheet with columns: Title, Link, Description
+        // 2. Go to File > Share > Publish to web
+        // 3. Under "Link", choose the specific sheet you want to publish.
+        // 4. For "Format", select "Comma-separated values (.csv)".
+        // 5. Click "Publish".
+        // 6. Copy the URL provided and paste it below.
+        const GOOGLE_SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vR_s_YOUR_SHEET_ID_HERE/pub?gid=0&single=true&output=csv';
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const linksContainer = document.getElementById('links-container');
+            const loadingMessage = document.getElementById('loading-message');
+            const errorMessage = document.getElementById('error-message');
+
+            async function fetchAndDisplayLinks() {
+                try {
+                    const response = await fetch(GOOGLE_SHEET_CSV_URL);
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    const csvText = await response.text();
+                    parseCSVAndDisplay(csvText);
+                } catch (error) {
+                    console.error('Error fetching links:', error);
+                    loadingMessage.style.display = 'none';
+                    errorMessage.textContent = `Failed to load links: ${error.message}. Please check the sheet URL and its publication status.`;
+                    errorMessage.classList.remove('hidden');
+                } finally {
+                    loadingMessage.style.display = 'none'; // Hide loading message regardless of success/failure
+                }
+            }
+
+            function parseCSVAndDisplay(csv) {
+                const lines = csv.split('\n').filter(line => line.trim() !== ''); // Split by line, filter empty
+                
+                if (lines.length <= 1) { // No data or just header
+                    linksContainer.innerHTML = '<p class="text-center text-gray-500">No links found in the Google Sheet.</p>';
+                    return;
+                }
+
+                // Assume first line is header: Title,Link,Description
+                const header = lines[0].split(',').map(h => h.trim().toLowerCase());
+                const titleIndex = header.indexOf('title');
+                const linkIndex = header.indexOf('link');
+                const descriptionIndex = header.indexOf('description');
+
+                if (titleIndex === -1 || linkIndex === -1 || descriptionIndex === -1) {
+                    errorMessage.textContent = 'Error: Google Sheet header must contain "Title", "Link", and "Description" columns.';
+                    errorMessage.classList.remove('hidden');
+                    return;
+                }
+
+
+                for (let i = 1; i < lines.length; i++) { // Start from second line (data rows)
+                    const columns = lines[i].split(',').map(col => col.trim().replace(/^"|"$/g, '')); // Split by comma, remove quotes
+                    
+                    const title = columns[titleIndex];
+                    const link = columns[linkIndex];
+                    const description = columns[descriptionIndex];
+
+                    if (title && link) { // Only create if title and link exist
+                        const linkCard = document.createElement('div');
+                        linkCard.className = 'bg-gray-50 p-5 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200';
+                        linkCard.innerHTML = `
+                            <h3 class="text-xl font-semibold text-gray-800 mb-2">
+                                <a href="${link}" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline">
+                                    ${title}
+                                </a>
+                            </h3>
+                            <p class="text-gray-600">${description || 'No description provided.'}</p>
+                        `;
+                        linksContainer.appendChild(linkCard);
+                    }
+                }
+            }
+
+            fetchAndDisplayLinks();
+        });
+    </script>
+</body>
+</html>
