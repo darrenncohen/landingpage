@@ -31,7 +31,13 @@
 
     <!-- Section: My Favorite Links -->
     <div class="p-8 bg-white rounded-xl shadow-xl w-full max-w-2xl mb-8">
-        <div id="links-container" class="space-y-6">
+        <div class="mb-4 pb-2 border-b border-gray-200">
+            <div class="grid grid-cols-1 md:grid-cols-5 gap-4 font-bold text-gray-800">
+                <div class="md:col-span-2">Title</div>
+                <div class="md:col-span-3">Description</div>
+            </div>
+        </div>
+        <div id="links-container" class="space-y-4">
             <!-- Links will be loaded here dynamically by JavaScript -->
             <p id="loading-message" class="text-center text-gray-500">Loading links from Google Sheet...</p>
         </div>
@@ -92,6 +98,7 @@
                     return;
                 }
 
+                linksContainer.innerHTML = ''; // Clear loading message
 
                 for (let i = 1; i < lines.length; i++) { // Start from second line (data rows)
                     const columns = lines[i].split(',').map(col => col.trim().replace(/^"|"$/g, '')); // Split by comma, remove quotes
@@ -101,17 +108,19 @@
                     const description = columns[descriptionIndex];
 
                     if (title && link) { // Only create if title and link exist
-                        const linkCard = document.createElement('div');
-                        linkCard.className = 'bg-gray-50 p-5 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200';
-                        linkCard.innerHTML = `
-                            <h3 class="text-xl font-semibold text-gray-800 mb-2">
-                                <a href="${link}" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline">
+                        const listItem = document.createElement('div');
+                        listItem.className = 'grid grid-cols-1 md:grid-cols-5 gap-4 py-3 px-2 rounded-lg hover:bg-gray-50 transition-colors duration-150';
+                        listItem.innerHTML = `
+                            <div class="md:col-span-2 text-lg font-medium text-blue-600">
+                                <a href="${link}" target="_blank" rel="noopener noreferrer" class="hover:underline">
                                     ${title}
                                 </a>
-                            </h3>
-                            <p class="text-gray-600">${description || 'No description provided.'}</p>
+                            </div>
+                            <div class="md:col-span-3 text-gray-700">
+                                ${description || 'No description provided.'}
+                            </div>
                         `;
-                        linksContainer.appendChild(linkCard);
+                        linksContainer.appendChild(listItem);
                     }
                 }
             }
