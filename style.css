@@ -17,6 +17,8 @@
     --color-green-600: #16a34a;
     --color-purple-600: #9333ea;
     --color-purple-700: #7e22ce;
+    --color-orange-500: #f97316; /* New color for Micro Blog */
+    --color-orange-600: #ea580c; /* New hover color for Micro Blog */
     --color-white: #ffffff;
     --color-red-500: #ef4444;
 
@@ -126,6 +128,9 @@ body {
 .btn-green-500:hover { background-color: var(--color-green-600); }
 .btn-purple-600 { background-color: var(--color-purple-600); }
 .btn-purple-600:hover { background-color: var(--color-purple-700); }
+.btn-orange-500 { background-color: var(--color-orange-500); } /* New style for Micro Blog */
+.btn-orange-500:hover { background-color: var(--color-orange-600); } /* New style for Micro Blog */
+
 
 .contact-link-button i {
     font-size: 1.25rem; /* Default Font Awesome icon size */
