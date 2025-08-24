@@ -6,61 +6,49 @@
     <title>Darren Cohen</title>
     <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Tailwind CSS CDN for styling -->
-    <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google Font: Inter for a modern look -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        /* Apply Inter font globally */
-        body {
-            font-family: 'Inter', sans-serif;
-        }
-        /* Your custom style.css (if any) should come after Tailwind if you intend to override its styles */
-    </style>
+    <!-- Custom Stylesheet -->
     <link rel="stylesheet" href="style.css">
     <!-- Tinylytics script for analytics -->
     <script src="https://tinylytics.app/embed/jjgdHGpboPCYpe8ysAud.js" defer></script>
 </head>
-<body class="bg-gray-100 min-h-screen flex flex-col items-center p-4">
-    <!-- Removed Spotify Embed Widget -->
-
+<body>
     <!-- Main profile card container -->
-    <div class="flex flex-col items-center p-8 bg-white rounded-xl shadow-xl w-full max-w-sm md:max-w-md">
+    <div class="card-wrapper profile-card">
 
         <!-- Profile Picture Section -->
-        <div class="relative w-36 h-36 rounded-full overflow-hidden border-4 border-blue-500 shadow-md transform hover:scale-105 transition-transform duration-300 ease-in-out">
+        <div class="profile-picture-container">
             <img
                 src="profile_picture.jpg"
                 alt="Darren Cohen Profile Picture"
-                class="w-full h-full object-cover"
                 onerror="this.onerror=null; this.src='https://placehold.co/144x144/cccccc/ffffff?text=Error';"
             >
         </div>
 
-        <!-- Name and Title -->
-        <h1 class="mt-6 text-3xl font-bold text-gray-800">Darren Cohen</h1>
-        <!-- Removed: <p class="text-lg text-gray-600">Web Developer | Security Enthusiast</p> -->
+        <!-- Name -->
+        <h1 class="profile-name">Darren Cohen</h1>
 
         <!-- Contact Links Section -->
-        <div class="mt-8 w-full flex flex-col items-center space-y-4">
-            <a href="mailto:info@darrencohen.me" class="w-full flex items-center justify-center space-x-3 bg-blue-500 hover:bg-blue-600 text-white font-medium py-3 px-6 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:-translate-y-0.5">
+        <div class="contact-links-section">
+            <a href="mailto:info@darrencohen.me" class="contact-link-button btn-blue">
                 <i class="fas fa-envelope"></i>
                 <span>E-mail: info@darrencohen.me</span>
             </a>
-            <a href="https://signal.me/#eu/lsA8ctyE3pFoxYdIDyxwrL9PmDUem_cElKY7MkQO6Qwpy23hbNhMM4uBBqgI9eVf" class="w-full flex items-center justify-center space-x-3 bg-gray-700 hover:bg-gray-800 text-white font-medium py-3 px-6 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:-translate-y-0.5">
+            <a href="https://signal.me/#eu/lsA8ctyE3pFoxYdIDyxwrL9PmDUem_cElKY7MkQO6Qwpy23hbNhMM4uBBqgI9eVf" class="contact-link-button btn-gray-700">
                 <i class="fa-solid fa-comment-dots"></i>
                 <span>Signal: darrencohen.01</span>
             </a>
-            <a href="https://github.com/darrenncohen" target="_blank" rel="noopener noreferrer" class="w-full flex items-center justify-center space-x-3 bg-gray-800 hover:bg-gray-900 text-white font-medium py-3 px-6 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:-translate-y-0.5">
+            <a href="https://github.com/darrenncohen" target="_blank" rel="noopener noreferrer" class="contact-link-button btn-gray-800">
                 <i class="fa-brands fa-github"></i>
                 <span>Github</span>
             </a>
-            <a href="https://open.spotify.com/user/31xgcuahz6pothygvdu3rdehtiou?si=45782acf060c407a" target="_blank" rel="noopener noreferrer" class="w-full flex items-center justify-center space-x-3 bg-green-500 hover:bg-green-600 text-white font-medium py-3 px-6 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:-translate-y-0.5">
+            <a href="https://open.spotify.com/user/31xgcuahz6pothygvdu3rdehtiou?si=45782acf060c407a" target="_blank" rel="noopener noreferrer" class="contact-link-button btn-green-500">
                 <i class="fa-brands fa-spotify"></i>
                 <span>Spotify Profile</span>
             </a>
             <!-- Button to navigate to the links page -->
-            <a href="links.html" class="w-full flex items-center justify-center space-x-3 bg-purple-600 hover:bg-purple-700 text-white font-medium py-3 px-6 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:-translate-y-0.5">
+            <a href="links.html" class="contact-link-button btn-purple-600">
                 <i class="fas fa-external-link-alt"></i>
                 <span>My Favorite Links</span>
             </a>

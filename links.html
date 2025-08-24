@@ -4,44 +4,34 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Darren Cohen - My Favorite Links</title>
-    <!-- Tailwind CSS CDN for styling -->
-    <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google Font: Inter for a modern look -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        /* Apply Inter font globally */
-        body {
-            font-family: 'Inter', sans-serif;
-        }
-    </style>
-    <!-- Your custom style.css (if any) -->
+    <!-- Custom Stylesheet -->
     <link rel="stylesheet" href="style.css">
 </head>
-<body class="bg-gray-100 min-h-screen flex flex-col items-center p-4">
+<body>
 
     <!-- Header for the links page -->
-    <header class="w-full max-w-2xl text-center mb-8">
-        <h1 class="text-4xl font-extrabold text-gray-900 mt-8 mb-4">My Favorite Links</h1>
-        <p class="text-xl text-gray-700">A collection of resources, tools, and inspirations I love.</p>
-        <a href="index.html" class="inline-flex items-center mt-6 px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-300 ease-in-out">
+    <header class="links-header">
+        <h1>My Favorite Links</h1>
+        <p>A collection of resources, tools, and inspirations I love.</p>
+        <a href="index.html" class="back-button">
             <svg class="h-5 w-5 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd"></path></svg>
             Back to Profile
         </a>
     </header>
 
     <!-- Section: My Favorite Links -->
-    <div class="p-8 bg-white rounded-xl shadow-xl w-full max-w-2xl mb-8">
-        <div class="mb-4 pb-2 border-b border-gray-200">
-            <div class="grid grid-cols-1 md:grid-cols-5 gap-4 font-bold text-gray-800">
-                <div class="md:col-span-2">Title</div>
-                <div class="md:col-span-3">Description</div>
-            </div>
+    <div class="card-wrapper links-section-container">
+        <div class="links-header-row">
+            <div>Title</div>
+            <div>Description</div>
         </div>
-        <div id="links-container" class="space-y-4">
+        <div id="links-container" class="links-list-container">
             <!-- Links will be loaded here dynamically by JavaScript -->
-            <p id="loading-message" class="text-center text-gray-500">Loading links from Google Sheet...</p>
+            <p id="loading-message" class="loading-message">Loading links from Google Sheet...</p>
         </div>
-        <p id="error-message" class="text-center text-red-500 mt-4 hidden">Failed to load links. Please ensure the Google Sheet is published correctly and the URL is valid.</p>
+        <p id="error-message" class="error-message">Failed to load links. Please ensure the Google Sheet is published correctly and the URL is valid.</p>
     </div>
 
     <script>
@@ -53,7 +43,7 @@
         // 4. For "Format", select "Comma-separated values (.csv)".
         // 5. Click "Publish".
         // 6. Copy the URL provided and paste it below.
-        const GOOGLE_SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTTKoBvXoiF4sJg4IiZdIMZKDYIQJuJenEiKeICnwy3GMU_KQgz_mGtenA_0x74e63hqD11OeRwP6Jq/pub?gid=0&single=true&output=csv';
+        const GOOGLE_SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vR_s_YOUR_SHEET_ID_HERE/pub?gid=0&single=true&output=csv';
 
         document.addEventListener('DOMContentLoaded', () => {
             const linksContainer = document.getElementById('links-container');
@@ -109,14 +99,14 @@
 
                     if (title && link) { // Only create if title and link exist
                         const listItem = document.createElement('div');
-                        listItem.className = 'grid grid-cols-1 md:grid-cols-5 gap-4 py-3 px-2 rounded-lg hover:bg-gray-50 transition-colors duration-150';
+                        listItem.className = 'link-list-item';
                         listItem.innerHTML = `
-                            <div class="md:col-span-2 text-lg font-medium text-blue-600">
-                                <a href="${link}" target="_blank" rel="noopener noreferrer" class="hover:underline">
+                            <div class="link-title">
+                                <a href="${link}" target="_blank" rel="noopener noreferrer">
                                     ${title}
                                 </a>
                             </div>
-                            <div class="md:col-span-3 text-gray-700">
+                            <div class="link-description">
                                 ${description || 'No description provided.'}
                             </div>
                         `;
