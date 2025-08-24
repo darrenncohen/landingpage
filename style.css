@@ -13,12 +13,14 @@
     --color-blue-500: #3b82f6;
     --color-blue-600: #2563eb;
     --color-blue-700: #1d4ed8;
+    --color-messenger-blue: #0078FF; /* Facebook Messenger blue */
+    --color-messenger-blue-hover: #0060cc; /* Darker blue for hover */
     --color-green-500: #22c55e;
     --color-green-600: #16a34a;
     --color-purple-600: #9333ea;
     --color-purple-700: #7e22ce;
-    --color-orange-500: #f97316; /* New color for Micro Blog */
-    --color-orange-600: #ea580c; /* New hover color for Micro Blog */
+    --color-orange-500: #f97316;
+    --color-orange-600: #ea580c;
     --color-white: #ffffff;
     --color-red-500: #ef4444;
 
@@ -128,8 +130,10 @@ body {
 .btn-green-500:hover { background-color: var(--color-green-600); }
 .btn-purple-600 { background-color: var(--color-purple-600); }
 .btn-purple-600:hover { background-color: var(--color-purple-700); }
-.btn-orange-500 { background-color: var(--color-orange-500); } /* New style for Micro Blog */
-.btn-orange-500:hover { background-color: var(--color-orange-600); } /* New style for Micro Blog */
+.btn-orange-500 { background-color: var(--color-orange-500); }
+.btn-orange-500:hover { background-color: var(--color-orange-600); }
+.btn-messenger-blue { background-color: var(--color-messenger-blue); } /* New style for Messenger */
+.btn-messenger-blue:hover { background-color: var(--color-messenger-blue-hover); } /* New style for Messenger */
 
 
 .contact-link-button i {
