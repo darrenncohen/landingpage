@@ -24,6 +24,8 @@
     --color-white: #ffffff;
     --color-red-500: #ef4444;
 
+    --footer-text-color: #9ca3af; /* A light gray for footer text */
+
     --spacing-1: 0.25rem; /* 4px */
     --spacing-2: 0.5rem;  /* 8px */
     --spacing-3: 0.75rem; /* 12px */
@@ -132,8 +134,8 @@ body {
 .btn-purple-600:hover { background-color: var(--color-purple-700); }
 .btn-orange-500 { background-color: var(--color-orange-500); }
 .btn-orange-500:hover { background-color: var(--color-orange-600); }
-.btn-messenger-blue { background-color: var(--color-messenger-blue); } /* New style for Messenger */
-.btn-messenger-blue:hover { background-color: var(--color-messenger-blue-hover); } /* New style for Messenger */
+.btn-messenger-blue { background-color: var(--color-messenger-blue); }
+.btn-messenger-blue:hover { background-color: var(--color-messenger-blue-hover); }
 
 
 .contact-link-button i {
@@ -260,13 +262,19 @@ body {
     display: none; /* hidden */
 }
 
+/* --- Footer Styles --- */
+.site-footer {
+    margin-top: auto; /* Push footer to the bottom */
+    padding: var(--spacing-8) var(--spacing-4); /* Ample padding */
+    text-align: center;
+    font-size: 0.875rem; /* Small text */
+    color: var(--footer-text-color); /* Light gray color */
+    width: 100%; /* Full width */
+}
+
+
 /* --- Responsive Adjustments (md breakpoint equivalent ~768px) --- */
 @media (min-width: 768px) {
     .card-wrapper.profile-card {
         max-width: 28rem; /* md:max-w-md */
-    }
-
-    .links-header-row, .link-list-item {
-        grid-template-columns: 2fr 3fr; /* md:grid-cols-5, md:col-span-2, md:col-span-3 */
-    }
-}
+  
