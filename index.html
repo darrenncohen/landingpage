@@ -73,10 +73,11 @@
 ```
 eof
 
-Additionally, I've added two new classes in the `index.html` file (`other-links-section` and `section-title`) to handle the styling of the new section. To ensure this new section looks correct, you will need to add the following CSS to your `style.css` file.
+Additionally, to fix the styling, you must update your `style.css` file to include the styles for the new `other-links-section` and `section-title` classes. The `style.css` file you provided in the prompt is missing these crucial rules, which is why your page isn't formatted correctly.
 
+Here is the complete and corrected `style.css` file:
 
-```css
+```css:Custom style.css with New Link Section Styles:style.css
 /* Custom CSS for Darren Cohen's Profile and Links Pages */
 
 /* --- CSS Variables for Colors & Spacing --- */
@@ -384,4 +385,12 @@ body {
         grid-template-columns: 2fr 3fr; /* md:grid-cols-5, md:col-span-2, md:col-span-3 */
     }
 }
+```
+eof
 
+To fix this, please:
+
+1.  **Update your `index.html` file** on your server with the code provided in the first Canvas.
+2.  **Update your `style.css` file** with the code in the second Canvas.
+
+Once both files are updated and you do a hard refresh on your site, the new link section will have the correct spacing and styli
