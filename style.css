@@ -132,6 +132,21 @@ body {
     gap: var(--spacing-4); /* space-y-4 */
 }
 
+.podcast-link-button {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-3); /* space-x-3 */
+    font-weight: 500; /* font-medium */
+    padding: var(--spacing-3) var(--spacing-6); /* py-3 px-6 */
+    border-radius: 0.5rem; /* rounded-lg */
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); /* shadow-md */
+    transition: transform 0.3s ease-in-out, background-color 0.3s ease-in-out;
+    color: #000000;
+    text-decoration: none;
+}
+
 /* Specific button colors */
 .btn-blue { background-color: var(--color-blue-500); }
 .btn-blue:hover { background-color: var(--color-blue-600); }
