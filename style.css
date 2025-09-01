@@ -18,7 +18,6 @@
     --color-green-500: #22c55e;
     --color-green-600: #16a34a;
     --color-purple-600: #9333ea;
-    --color-purple-600: #9333ea;
     --color-purple-700: #7e22ce;
     --color-orange-500: #f97316;
     --color-orange-600: #ea580c;
@@ -139,9 +138,10 @@ body {
 .btn-orange-500:hover { background-color: var(--color-orange-600); }
 .btn-messenger-blue { background-color: var(--color-messenger-blue); }
 .btn-messenger-blue:hover { background-color: var(--color-messenger-blue-hover); }
-.btn-messenger-blue { background-color: var(--color-messenger-blue); }
-.btn-messenger-navy { background-color: var(--color-messenger-navy); }
-.btn-messenger-mustard { background-color: var(--color-messenger-mustard); }
+.btn-navy { background-color: var(--color-navy); }
+.btn-navy:hover { background-color: var(--color-gray-900); }
+.btn-mustard { background-color: var(--color-mustard); color: var(--color-gray-900); }
+.btn-mustard:hover { background-color: #ffc400; }
 
 
 
