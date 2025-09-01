@@ -24,6 +24,8 @@
     --color-orange-600: #ea580c;
     --color-white: #ffffff;
     --color-red-500: #ef4444;
+    --color-navy: #000080;
+    --color-mustard: #FFCE1B;
 
     --footer-text-color: #a0a0a0; /* Lighter grey for footer text */
 
@@ -137,6 +139,10 @@ body {
 .btn-orange-500:hover { background-color: var(--color-orange-600); }
 .btn-messenger-blue { background-color: var(--color-messenger-blue); }
 .btn-messenger-blue:hover { background-color: var(--color-messenger-blue-hover); }
+.btn-messenger-blue { background-color: var(--color-messenger-blue); }
+.btn-messenger-navy { background-color: var(--color-messenger-navy); }
+.btn-messenger-mustard { background-color: var(--color-messenger-mustard); }
+
 
 
 .contact-link-button i {
