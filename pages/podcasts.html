@@ -3,40 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Darren Cohen</title>
+    <title>Favorite Podcasts</title>
     <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Google Font: Inter for a modern look -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <!-- Custom Stylesheet -->
     <link rel="stylesheet" href="../style.css">
-    <!-- Tinylytics script for analytics -->
-    <script src="https://tinylytics.app/embed/jjgdHGpboPCYpe8ysAud.js" defer></script>
 </head>
 <body>
     <!-- Main profile card container -->
     <div class="card-wrapper profile-card">
-
-        <!-- Profile Picture Section -->
-        <div class="profile-picture-container">
-            <img
-                src="../profile_picture.jpg"
-                alt="Darren Cohen Profile Picture"
-                onerror="this.onerror=null; this.src='https://placehold.co/144x144/cccccc/ffffff?text=Error';"
-            >
-        </div>
-
         <!-- Header -->
-        <h1>Podcasts I Listen To</h1>
+        <h1 class="profile-name">Favorite Podcasts</h1>
 
         <!-- List of Podcasts-->
-        <div class="podcast-links-section"></div>
-        <a href="https://www.nytimes.com/column/the-daily" target="_blank" class="podcast-link-button">
+        <div class="contact-links-section">
+            <a href="https://www.nytimes.com/column/the-daily" target="_blank" class="podcast-link-button">
                 <i class="fa-solid fa-podcast"></i>
                 <span>The Daily - New York Times</span>
-        </a>
-        <a href="https://www.npr.org/podcasts/510318/up-first" target="_blank" class="podcast-link-button">
+            </a>
+            <a href="https://www.npr.org/podcasts/510318/up-first" target="_blank" class="podcast-link-button">
                 <i class="fa-solid fa-podcast"></i>
                 <span>Up First From NPR</span>
-        </a>
+            </a>
+            <a href="https://podcasts.google.com/feed/aHR0cHM6Ly9mZWVkcy5tZWdhcGhvbmUuZm0vY29kZXN3aXRjaA==" target="_blank" class="podcast-link-button">
+                <i class="fa-solid fa-podcast"></i>
+                <span>Code Switch - NPR</span>
+            </a>
+            <a href="https://www.npr.org/podcasts/510313/fresh-air" target="_blank" class="podcast-link-button">
+                <i class="fa-solid fa-podcast"></i>
+                <span>Fresh Air - NPR</span>
+            </a>
+            <a href="https://podcasts.google.com/feed/aHR0cHM6Ly9mZWVkcy5zaW1wbGUuY2FzdC90d2FwaA==" target="_blank" class="podcast-link-button">
+                <i class="fa-solid fa-podcast"></i>
+                <span>This Week In Tech</span>
+            </a>
         </div>
+    </div>
+</body>
+</html>
