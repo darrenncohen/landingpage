@@ -123,6 +123,15 @@ body {
     transform: translateY(-0.125rem); /* hover:-translate-y-0.5 */
 }
 
+.podcast-links-section {
+    margin-top: var(--spacing-8); /* mt-8 */
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spacing-4); /* space-y-4 */
+}
+
 /* Specific button colors */
 .btn-blue { background-color: var(--color-blue-500); }
 .btn-blue:hover { background-color: var(--color-blue-600); }
