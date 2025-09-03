@@ -25,6 +25,8 @@
     --color-red-500: #ef4444;
     --color-navy: #000080;
     --color-mustard: #FFCE1B;
+    --color-instagram: #E1306C; /* Instagram's iconic pink */
+    --color-bluesky: #2e86f8; /* BlueSky's iconic blue */
 
     --footer-text-color: #a0a0a0; /* Lighter grey for footer text */
 
@@ -170,6 +172,10 @@ body {
 .btn-navy:hover { background-color: var(--color-gray-900); }
 .btn-mustard { background-color: var(--color-mustard); color: var(--color-gray-900); }
 .btn-mustard:hover { background-color: #ffc400; }
+.btn-instagram { background: linear-gradient(to right, #833ab4, #fd1d1d, #fcb045); }
+.btn-instagram:hover { background: linear-gradient(to right, #6b2a8d, #e01c1c, #d5963b); }
+.btn-bluesky { background-color: var(--color-bluesky); }
+.btn-bluesky:hover { background-color: #216ac0; }
 
 
 
