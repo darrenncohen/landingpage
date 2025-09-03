@@ -27,6 +27,8 @@
     --color-mustard: #FFCE1B;
     --color-instagram: #E1306C; /* Instagram's iconic pink */
     --color-bluesky: #2e86f8; /* BlueSky's iconic blue */
+    --color-discord: #5865F2; /* Discord's iconic blue */
+    --color-discord-hover: #4854d6; /* Darker blue for hover */
 
     --footer-text-color: #a0a0a0; /* Lighter grey for footer text */
 
@@ -176,6 +178,8 @@ body {
 .btn-instagram:hover { background: linear-gradient(to right, #6b2a8d, #e01c1c, #d5963b); }
 .btn-bluesky { background-color: var(--color-bluesky); }
 .btn-bluesky:hover { background-color: #216ac0; }
+.btn-discord { background-color: var(--color-discord); }
+.btn-discord:hover { background-color: var(--color-discord-hover); }
 
 
 
