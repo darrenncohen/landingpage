@@ -184,6 +184,11 @@ body {
     margin-bottom: var(--spacing-2);
 }
 
+.links-container {
+    width: 100%;
+    margin-top: var(--spacing-6);
+}
+
 /* --- Links Page Specific Styles --- */
 .links-header {
     width: 100%;
@@ -235,7 +240,7 @@ body {
     padding: var(--spacing-8); /* p-8 */
     background-color: var(--color-white);
     border-radius: 0.75rem; /* rounded-xl */
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); /* shadow-xl */
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.05); /* shadow-xl */
     width: 100%;
     max-width: 42rem; /* max-w-2xl */
     margin-bottom: var(--spacing-8); /* mb-8 */
