@@ -372,3 +372,12 @@ body {
         grid-template-columns: 2fr 3fr; /* md:grid-cols-5, md:col-span-2, md:col-span-3 */
     }
 }
+
+.section-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--color-gray-800);
+    margin-top: var(--spacing-8); /* Push the title down from the contact links */
+    margin-bottom: var(--spacing-2);
+    text-align: center;
+}
