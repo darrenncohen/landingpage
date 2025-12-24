@@ -6,30 +6,6 @@
     <title>Gallery | Darren Cohen</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        .gallery-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: var(--spacing-4);
-            padding: var(--spacing-4);
-        }
-        .gallery-item {
-            border-radius: 12px;
-            overflow: hidden;
-            background: var(--color-gray-100);
-            aspect-ratio: 1 / 1;
-        }
-        .gallery-item img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            display: block;
-            transition: transform 0.3s ease;
-        }
-        .gallery-item img:hover {
-            transform: scale(1.05);
-        }
-    </style>
 </head>
 <body>
     <div class="links-header">
@@ -40,16 +16,9 @@
 
     <div class="gallery-container">
         <div class="gallery-item">
-            <img src="images/bike-bridge.JPEG" alt="Biking on Williamsburg Bridge" loading="lazy">
-        </div>
-         <div class="gallery-item">
-            <img src="images/lic-train.jpeg" alt="7 Train going through Long Island City" loading="lazy">
+            <img src="profile_picture.jpg" alt="Example Photo">
         </div>
     </div>
-
-    <button id="backToTop" title="Back to Top">
-    <i class="fas fa-arrow-up"></i>
-    </button>
 
     <footer class="site-footer">
         <p>Last updated: December 2025</p>
