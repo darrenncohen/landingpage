@@ -390,4 +390,26 @@ body {
     aspect-ratio: 1 / 1; /* This creates a uniform square grid */
     background-color: var(--color-gray-200); /* Shows a gray box while loading */
 }
+#backToTop {
+    display: none; /* Hidden by default */
+    position: fixed;
+    bottom: var(--spacing-8);
+    right: var(--spacing-8);
+    z-index: 99;
+    border: none;
+    outline: none;
+    background-color: var(--color-blue-600);
+    color: white;
+    cursor: pointer;
+    padding: var(--spacing-4);
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+#backToTop:hover {
+    background-color: var(--color-blue-700);
+    transform: scale(1.1);
 }
