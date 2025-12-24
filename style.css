@@ -101,11 +101,12 @@ body {
 }
 
 .section-title {
-    font-size: 1.5rem;
+    font-size: 1.25rem;
     font-weight: 600;
     color: var(--color-gray-800);
-    margin-top: var(--spacing-8); /* Add spacing above title */
+    margin-top: var(--spacing-8); /* Push the title down from the contact links */
     margin-bottom: var(--spacing-2);
+    text-align: center;
 }
 
 .contact-links-section {
@@ -180,14 +181,6 @@ body {
     flex-direction: column;
     align-items: center;
     gap: var(--spacing-4);
-}
-
-.section-title {
-    font-size: 1.5rem;
-    font-weight: 600;
-    color: var(--color-gray-800);
-    margin-top: var(--spacing-8); /* Add spacing above title */
-    margin-bottom: var(--spacing-2);
 }
 
 .links-container {
@@ -346,6 +339,30 @@ body {
     color: var(--color-gray-700);
 }
 
+/* --- Gallery Page Styles --- */
+.gallery-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: var(--spacing-4);
+    padding: var(--spacing-4);
+}
+.gallery-item {
+    border-radius: 12px;
+    overflow: hidden;
+    background: var(--color-gray-100);
+    aspect-ratio: 1 / 1;
+}
+.gallery-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.3s ease;
+}
+.gallery-item img:hover {
+    transform: scale(1.05);
+}
+
 /* --- Footer Styles --- */
 .site-footer {
     margin-top: auto; /* Push footer to the bottom */
@@ -371,45 +388,4 @@ body {
     .links-header-row, .link-list-item {
         grid-template-columns: 2fr 3fr; /* md:grid-cols-5, md:col-span-2, md:col-span-3 */
     }
-}
-
-.section-title {
-    font-size: 1.25rem;
-    font-weight: 600;
-    color: var(--color-gray-800);
-    margin-top: var(--spacing-8); /* Push the title down from the contact links */
-    margin-bottom: var(--spacing-2);
-    text-align: center;
-}
-
-.gallery-item img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-    aspect-ratio: 1 / 1; /* This creates a uniform square grid */
-    background-color: var(--color-gray-200); /* Shows a gray box while loading */
-}
-#backToTop {
-    display: none; /* Hidden by default */
-    position: fixed;
-    bottom: var(--spacing-8);
-    right: var(--spacing-8);
-    z-index: 99;
-    border: none;
-    outline: none;
-    background-color: var(--color-blue-600);
-    color: white;
-    cursor: pointer;
-    padding: var(--spacing-4);
-    border-radius: 50%;
-    width: 50px;
-    height: 50px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-    transition: background-color 0.3s, transform 0.3s;
-}
-
-#backToTop:hover {
-    background-color: var(--color-blue-700);
-    transform: scale(1.1);
 }
