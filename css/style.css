@@ -44,16 +44,15 @@
 
 /* --- Base Styles --- */
 body {
-    font-family: 'Inter', sans-serif;
-    background-color: var(--color-gray-100);
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: var(--spacing-4); /* p-4 */
-    margin: 0; /* Remove default body margin */
+  font-family: 'Inter', sans-serif;
+  background: radial-gradient(1200px 800px at 20% 0%, #eaf2ff 0%, var(--color-gray-100) 60%);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: var(--spacing-4);
+  margin: 0;
 }
-
 /* --- Common Card Styling --- */
 .card-wrapper {
     background-color: var(--color-white);
