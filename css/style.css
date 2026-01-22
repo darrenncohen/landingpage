@@ -388,3 +388,105 @@ body {
         grid-template-columns: 2fr 3fr; /* md:grid-cols-5, md:col-span-2, md:col-span-3 */
     }
 }
+
+/* --- V2 polish (small, high impact) --- */
+
+/* Subtle background that still feels minimal */
+body {
+  background:
+    radial-gradient(1200px 800px at 20% 0%, #eaf2ff 0%, var(--color-gray-100) 60%);
+}
+
+/* Make the main card breathe a bit more on larger screens */
+@media (min-width: 768px) {
+  .card-wrapper {
+    max-width: 28rem; /* slightly wider than current */
+  }
+}
+
+/* Tagline under your name */
+.profile-tagline {
+  margin-top: var(--spacing-2);
+  margin-bottom: var(--spacing-6);
+  color: var(--color-gray-700);
+  text-align: center;
+}
+
+/* Small nav pills */
+.mini-nav {
+  display: flex;
+  gap: var(--spacing-2);
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-bottom: var(--spacing-6);
+}
+
+.mini-nav-pill {
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.95rem;
+  padding: 0.4rem 0.75rem;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.7);
+  border: 1px solid var(--color-gray-200);
+  color: var(--color-gray-800);
+  transition: transform 0.15s ease, background-color 0.15s ease;
+}
+
+.mini-nav-pill:hover {
+  transform: translateY(-1px);
+  background: rgba(255,255,255,0.95);
+}
+
+/* General content container for now/links pages */
+.content-container {
+  width: 100%;
+  max-width: 920px;
+  padding: 0 var(--spacing-4);
+  margin-bottom: var(--spacing-8);
+}
+
+.content-card {
+  background: var(--color-white);
+  border-radius: 0.75rem;
+  box-shadow: 0 10px 15px -3px rgba(0,0,0,0.08), 0 2px 4px -1px rgba(0,0,0,0.04);
+  padding: var(--spacing-8);
+  margin: var(--spacing-4) auto;
+}
+
+.page-section-title {
+  margin: 0 0 var(--spacing-4) 0;
+  font-size: 1.25rem;
+  color: var(--color-gray-800);
+}
+
+.page-note {
+  margin-top: var(--spacing-6);
+  padding: var(--spacing-4);
+  border-radius: 0.75rem;
+  background: var(--color-gray-50);
+  border: 1px solid var(--color-gray-200);
+  color: var(--color-gray-700);
+}
+
+/* Nice simple list style */
+.simple-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3);
+}
+
+.time-chip {
+  display: inline-block;
+  font-size: 0.8rem;
+  font-weight: 700;
+  padding: 0.2rem 0.5rem;
+  border-radius: 999px;
+  margin-right: 0.5rem;
+  background: var(--color-gray-100);
+  border: 1px solid var(--color-gray-200);
+  color: var(--color-gray-800);
+}
