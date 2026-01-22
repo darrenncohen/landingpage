@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<rss version="2.0"
+     xmlns:content="http://purl.org/rss/1.0/modules/content/"
+     xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Darren Cohen — Link Blog</title>
+    <link>https://darrencohen.me/</link>
+    <description>Articles I’m reading, with short notes.</description>
+    <language>en-us</language>
+    <ttl>60</ttl>
+
+    <!-- This line helps feed readers discover updates -->
+    <atom:link href="https://darrencohen.me/feed.xml" rel="self" type="application/rss+xml" />
+
+    <!-- ====== NEWEST ITEMS AT TOP ====== -->
+
+    <item>
+      <title>2026 ZiPS Projections: New York Mets (FanGraphs)</title>
+      <link>https://blogs.fangraphs.com/2026-zips-projections-new-york-mets/</link>
+      <guid isPermaLink="false">darrencohen.me-linkblog-2026-01-22-mets-zips</guid>
+      <pubDate>Thu, 22 Jan 2026 10:00:00 -0500</pubDate>
+
+      <description><![CDATA[
+        Despite last season’s collapse, ZiPS projects the Mets as a highly competitive team in the NL East, and one the league shouldn’t dismiss.
+      ]]></description>
+
+      <content:encoded><![CDATA[
+        <p><strong>Quote:</strong> Despite last season’s collapse, ZiPS projects the Mets as a highly competitive team in the NL East, and one the league shouldn’t dismiss.</p>
+        <hr />
+        <p><strong>My note:</strong> I know it might not feel like it, but the Mets are better today than they were on the last day of the season.</p>
+        <p><a href="https://blogs.fangraphs.com/2026-zips-projections-new-york-mets/">Read the article →</a></p>
+      ]]></content:encoded>
+    </item>
+
+  </channel>
+</rss>
