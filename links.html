@@ -3,38 +3,65 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Links | Darren Cohen</title>
+  <title>Link Blog | Darren Cohen</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
   <div class="links-header">
-    <h1>Links</h1>
-    <p>Things I read and found interesting — with a few notes.</p>
+    <h1>Link Blog</h1>
+    <p>Articles I’m reading, with short notes.</p>
     <a href="index.html" class="back-button">Back to Home</a>
   </div>
 
-  <div class="links-section-container">
-    <div class="links-list-container">
+  <div class="content-container">
+    <div class="content-card">
 
-      <!-- ====== Add new items at the top ====== -->
-      <div class="link-list-item">
-        <div class="link-title">
-          <a href="https://example.com" target="_blank" rel="noopener">Example link title</a>
-        </div>
-        <div class="link-description">
-          One or two sentences of commentary. Why it stood out, what you agreed/disagreed with, etc.
-        </div>
-      </div>
+      <!-- Newest entries at top -->
 
-      <div class="link-list-item">
-        <div class="link-title">
-          <a href="https://example.com" target="_blank" rel="noopener">Another link</a>
+      <article class="post">
+        <h2 class="post-title">
+          <a href="https://example.com" target="_blank" rel="noopener">Article Title</a>
+        </h2>
+
+        <div class="post-meta">
+          <span>Jan 22, 2026</span>
+          <span class="dot">•</span>
+          <span>Source Name</span>
         </div>
-        <div class="link-description">
-          Short note.
+
+        <blockquote class="post-quote">
+          Quote from piece (keep it short).
+        </blockquote>
+
+        <hr class="post-rule" />
+
+        <p class="post-blurb">
+          Your blurb here. A few sentences: why it’s interesting, what you agree/disagree with, what it made you think about.
+        </p>
+      </article>
+
+      <article class="post">
+        <h2 class="post-title">
+          <a href="https://example.com" target="_blank" rel="noopener">Another Article</a>
+        </h2>
+
+        <div class="post-meta">
+          <span>Jan 20, 2026</span>
+          <span class="dot">•</span>
+          <span>Another Source</span>
         </div>
-      </div>
+
+        <blockquote class="post-quote">
+          A strong line that captures the point.
+        </blockquote>
+
+        <hr class="post-rule" />
+
+        <p class="post-blurb">
+          Your note.
+        </p>
+      </article>
 
     </div>
   </div>
