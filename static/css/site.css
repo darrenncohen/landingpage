@@ -61,15 +61,20 @@ blockquote {
 .button-col{ display:flex; flex-direction:column; gap:10px; margin: 12px 0 18px; }
 
 .btn{
-  display:inline-block;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   padding: 10px 14px;
+  min-width: 220px;        /* 👈 key line */
   border-radius: 12px;
   border: 1px solid rgba(127,127,127,.25);
-  text-decoration:none;
+  text-decoration: none;
   color: inherit;
   background: rgba(127,127,127,.08);
   font-weight: 600;
+  text-align: center;
 }
+
 .btn:hover{ text-decoration:none; transform: translateY(-1px); }
 .btn-primary{
   border-color: rgba(60,120,255,.35);

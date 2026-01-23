@@ -13,9 +13,9 @@ Minimal tools, good links, and occasional notes.
 </p>
 
 <div class="button-row">
-  <a class="btn" href="/links/">Links</a>
+  <a class="btn" href="/blog/">Blog</a>
   <a class="btn" href="/now/">Now</a>
-  <a class="btn" href="/links/index.xml">RSS</a>
+  <a class="btn" href="/blog/index.xml">RSS</a>
 </div>
 
 <div class="divider"></div>
