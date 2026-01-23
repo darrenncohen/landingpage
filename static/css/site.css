@@ -27,3 +27,57 @@ blockquote {
 }
 
 .footer { margin-top: 40px; opacity: .7; }
+
+.button-row{ display:flex; gap:12px; flex-wrap:wrap; margin: 12px 0 18px; }
+.button-col{ display:flex; flex-direction:column; gap:10px; margin: 12px 0 18px; }
+
+.btn{
+  display:inline-block;
+  padding: 10px 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(127,127,127,.25);
+  text-decoration:none;
+  color: inherit;
+  background: rgba(127,127,127,.08);
+  font-weight: 600;
+}
+.btn:hover{ text-decoration:none; transform: translateY(-1px); }
+.btn-primary{
+  border-color: rgba(60,120,255,.35);
+  background: rgba(60,120,255,.14);
+}
+
+/* --- Home profile card --- */
+
+.home-card{
+  max-width: 420px;
+  margin: 0 auto;
+  padding: 28px 22px 30px;
+  border-radius: 18px;
+  background: rgba(255,255,255,.75);
+  box-shadow: 0 20px 30px -12px rgba(0,0,0,.15);
+  text-align: center;
+}
+
+.profile-photo{
+  width: 120px;
+  height: 120px;
+  border-radius: 999px;
+  object-fit: cover;
+  margin-bottom: 14px;
+  border: 1px solid rgba(127,127,127,.25);
+}
+
+.tagline{
+  margin-top: -6px;
+  margin-bottom: 16px;
+  opacity: .85;
+}
+
+.divider{
+  height: 1px;
+  background: rgba(127,127,127,.25);
+  margin: 20px 0;
+}
+
+/* reuse button styles from earlier */
