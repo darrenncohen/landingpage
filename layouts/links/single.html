@@ -1,0 +1,14 @@
+{{ define "main" }}
+  <h1><a href="{{ .Params.link }}" target="_blank" rel="noopener">{{ .Title }}</a></h1>
+  <p class="meta">
+    {{ .Date.Format "Jan 2, 2006 · 3:04pm" }}
+    {{ with .Params.source }} · {{ . }}{{ end }}
+    · <a href="{{ .RelPermalink }}">Permalink</a>
+  </p>
+
+  {{ .Content }}
+
+  {{ with .Params.link }}
+    <p><a href="{{ . }}" target="_blank" rel="noopener">Read the original →</a></p>
+  {{ end }}
+{{ end }}

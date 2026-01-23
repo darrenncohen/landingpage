@@ -1,0 +1,14 @@
+{{ define "main" }}
+  <h1>{{ .Title }}</h1>
+  {{ with .Params.description }}<p class="subtitle">{{ . }}</p>{{ end }}
+
+  <div class="posts">
+    {{ range .Pages }}
+      <div class="post">
+        <h2 class="post-title"><a href="{{ .RelPermalink }}">{{ .Title }}</a></h2>
+        <p class="meta">{{ .Date.Format "Jan 2, 2006 · 3:04pm" }}</p>
+        {{ with .Summary }}<p>{{ . }}</p>{{ end }}
+      </div>
+    {{ end }}
+  </div>
+{{ end }}
