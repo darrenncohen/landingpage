@@ -4,11 +4,10 @@ body { margin:0; font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,sans-seri
 
 .site-header{
   display:flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 10px;
+  align-items:center;
+  justify-content: space-between;
+  gap: 16px;
   margin-bottom: 28px;
-  text-align: center;
 }
 
 .brand{
@@ -21,7 +20,7 @@ body { margin:0; font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,sans-seri
   display:flex;
   gap: 14px;
   flex-wrap: wrap;
-  justify-content: center;
+  justify-content: flex-end;
 }
 
 .nav a{
@@ -108,3 +107,17 @@ blockquote {
 }
 
 /* reuse button styles from earlier */
+
+.button-row{
+  display:flex;
+  gap:12px;
+  flex-wrap:wrap;
+  justify-content: center;
+}
+
+.button-col{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  align-items: center;
+}

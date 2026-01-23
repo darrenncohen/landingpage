@@ -21,7 +21,7 @@ Minimal tools, good links, and occasional notes.
 <div class="divider"></div>
 
 <div class="button-col">
-  <a class="btn btn-primary" href="mailto:info@darrencohen.me">Email: info@darrencohen.me</a>
+  <a class="btn" href="mailto:info@darrencohen.me">Email: info@darrencohen.me</a>
   <a class="btn" href="https://bsky.app/profile/darrencohen.me" target="_blank" rel="noopener">Bluesky</a>
   <a class="btn" href="https://instagram.com/_darrencohen" target="_blank" rel="noopener">Instagram</a>
   <a class="btn" href="https://m.me/darren.cohen" target="_blank" rel="noopener">Messenger</a>
