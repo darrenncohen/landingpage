@@ -1,7 +1,9 @@
 baseURL = "https://darrencohen.me/"
 languageCode = "en-us"
 title = "Darren Cohen"
-paginate = 25
+
+[pagination]
+pagerSize = 25
 
 [outputs]
 home = ["HTML", "RSS"]
@@ -9,3 +11,4 @@ section = ["HTML", "RSS"]
 
 [params]
 subtitle = "Links I’m reading, with short notes."
+
