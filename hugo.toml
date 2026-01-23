@@ -12,3 +12,7 @@ section = ["HTML", "RSS"]
 [params]
 subtitle = "Links I’m reading, with short notes."
 
+[markup]
+  [markup.goldmark]
+    [markup.goldmark.renderer]
+      unsafe = true
