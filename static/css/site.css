@@ -1,5 +1,34 @@
-:root { color-scheme: light dark; }
-body { margin:0; font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,sans-serif; }
+:root {
+  color-scheme: light;
+  --bg: #f8f6f1;
+  --text: #141414;
+  --muted: rgba(20, 20, 20, 0.65);
+  --border: rgba(20, 20, 20, 0.18);
+  --surface: rgba(20, 20, 20, 0.06);
+  --accent-border: rgba(32, 90, 190, 0.35);
+  --accent-surface: rgba(32, 90, 190, 0.14);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+    --bg: #101010;
+    --text: #f2f2f2;
+    --muted: rgba(242, 242, 242, 0.68);
+    --border: rgba(242, 242, 242, 0.22);
+    --surface: rgba(242, 242, 242, 0.08);
+    --accent-border: rgba(92, 140, 240, 0.45);
+    --accent-surface: rgba(92, 140, 240, 0.18);
+  }
+}
+
+body {
+  margin: 0;
+  font: 16px/1.6 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+    "Liberation Mono", "Courier New", monospace;
+  background: var(--bg);
+  color: var(--text);
+}
 .wrap { max-width: 780px; margin: 0 auto; padding: 24px; }
 
 .site-header{
@@ -25,6 +54,7 @@ body { margin:0; font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,sans-seri
 
 .nav a{
   text-decoration: none;
+  color: inherit;
   opacity: .8;
   font-weight: 600;
 }
@@ -37,11 +67,11 @@ body { margin:0; font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,sans-seri
 
 
 .content h1 { line-height:1.15; margin-top: 0; }
-.subtitle { opacity:.8; margin-top: -10px; }
-.meta { opacity:.7; margin-top: -6px; font-size: .95rem; }
+.subtitle { color: var(--muted); margin-top: -10px; }
+.meta { color: var(--muted); margin-top: -6px; font-size: .95rem; }
 
 .posts { display:flex; flex-direction:column; gap: 18px; }
-.post { padding: 14px 0; border-bottom: 1px solid rgba(127,127,127,.25); }
+.post { padding: 14px 0; border-bottom: 1px solid var(--border); }
 .post:last-child { border-bottom: none; }
 .post-title { margin: 0; line-height:1.2; font-size: 1.25rem; }
 .post-title a { text-decoration:none; color:inherit; }
@@ -50,12 +80,12 @@ body { margin:0; font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,sans-seri
 blockquote {
   margin: 16px 0;
   padding: 12px 14px;
-  border-left: 4px solid rgba(127,127,127,.35);
-  background: rgba(127,127,127,.08);
+  border-left: 4px solid var(--border);
+  background: var(--surface);
   border-radius: 10px;
 }
 
-.footer { margin-top: 40px; opacity: .7; }
+.footer { margin-top: 40px; color: var(--muted); }
 
 .button-row{ display:flex; gap:12px; flex-wrap:wrap; margin: 12px 0 18px; }
 .button-col{ display:flex; flex-direction:column; gap:10px; margin: 12px 0 18px; }
@@ -67,18 +97,18 @@ blockquote {
   padding: 10px 14px;
   min-width: 220px;        /* 👈 key line */
   border-radius: 12px;
-  border: 1px solid rgba(127,127,127,.25);
+  border: 1px solid var(--border);
   text-decoration: none;
   color: inherit;
-  background: rgba(127,127,127,.08);
+  background: var(--surface);
   font-weight: 600;
   text-align: center;
 }
 
 .btn:hover{ text-decoration:none; transform: translateY(-1px); }
 .btn-primary{
-  border-color: rgba(60,120,255,.35);
-  background: rgba(60,120,255,.14);
+  border-color: var(--accent-border);
+  background: var(--accent-surface);
 }
 
 /* --- Home layout (no card) --- */
@@ -90,24 +120,51 @@ blockquote {
   text-align: center;
 }
 
-.profile-photo{
-  width: 120px;
-  height: 120px;
-  border-radius: 999px;
-  object-fit: cover;
-  margin-bottom: 14px;
-  border: 1px solid rgba(127,127,127,.35);
+.terminal-list{
+  list-style: none;
+  padding: 0;
+  margin: 12px auto 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  text-align: left;
+}
+
+.terminal-list li{
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 4px 0;
+  border-bottom: 1px dashed var(--border);
+}
+
+.terminal-list li:last-child{
+  border-bottom: none;
+}
+
+.terminal-list li::before{
+  content: ">";
+  color: var(--muted);
+}
+
+.terminal-list a{
+  text-decoration: none;
+  color: inherit;
+}
+
+.terminal-list a:hover{
+  text-decoration: underline;
 }
 
 .tagline{
   margin-top: -6px;
   margin-bottom: 18px;
-  opacity: .8;
+  color: var(--muted);
 }
 
 .divider{
   height: 1px;
-  background: rgba(127,127,127,.25);
+  background: var(--border);
   margin: 22px 0;
 }
 
