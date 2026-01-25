@@ -4,7 +4,7 @@ title: "Darren Cohen"
 
 <div class="home">
 
-<img src="/img/profile.jpg" alt="Darren Cohen" class="profile-photo" />
+<!-- <img src="/img/profile.jpg" alt="Darren Cohen" class="profile-photo" /> -->
 
 <h1>Darren Cohen</h1>
 
