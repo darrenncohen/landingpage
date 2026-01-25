@@ -12,3 +12,4 @@ title: "Darren Cohen - Things I Use"
 - [Drafts on iOS](https://getdrafts.com)
 - [Apple Music](https://music.apple.com)
 - [Overcast on iOS](https://overcast.fm)
+- [Signal](https://signal.org/)
