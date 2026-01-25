@@ -12,7 +12,7 @@ Minimal tools, good links, and occasional notes.
 
 <ul class="terminal-list">
   <li><a href="/blog/">Blog</a></li>
-  <li><a href="/things-i-use/">Things I Use</a></li>
+  <li><a href="/things-i-use/">Apps/Services</a></li>
   <li><a href="/recommended/">Recommended</a></li>
   <li><a href="/blog/index.xml">RSS</a></li>
 </ul>
