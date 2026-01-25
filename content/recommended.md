@@ -1,17 +1,6 @@
 ---
-title: "Darren Cohen - Now"
+title: "Darren Cohen - Recommended"
 ---
-
-## Apps & services
-- [Fastmail (custom domain)](https://fastmail.com)
-- [Obsidian + Obsidian Sync](https://obsidian.md/)
-- [Dropbox](https://dropbox.com)
-- [Bitwarden](https://bitwarden.com)
-- [Brave on Linux and iOS](https://brave.com)
-- [Safari on iOS/Default](https://apple.com/safari)
-- [Drafts on iOS](https://getdrafts.com)
-- [Apple Music](https://music.apple.com)
-- [Overcast on iOS](https://overcast.fm)
 
 ## Podcasts
 - [99% Invisible](https://99percentinvisible.org/)
@@ -36,4 +25,11 @@ title: "Darren Cohen - Now"
 - [Zero to Well Read](https://www.zerotowellread.com/)
 
 ## Newsletters
-- 
+- [Citation Needed (Molly White)](https://www.citationneeded.news/)
+- [The Morning (The New York Times)](https://www.nytimes.com/newsletters/the-morning)
+- [The World (The New York Times)](https://www.nytimes.com/newsletters/the-world)
+- [The Weekender (The New York Times)](https://www.nytimes.com/newsletters/weekender)
+- [The Verge Installer](https://www.theverge.com/installer-newsletter)
+- [Kottke](https://kottke.org/newsletter)
+- [New York Today (The New York Times)](https://www.nytimes.com/newsletters/new-york-today)
+- [The City Scoop (THE CITY)](https://www.thecity.nyc/newsletter/)
