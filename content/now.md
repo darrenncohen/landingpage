@@ -3,11 +3,18 @@ title: "Darren Cohen - Now"
 ---
 
 ## Apps & services
-- Fastmail (custom domain)
-- Obsidian + Obsidian Sync
-- Dropbox
-- Bitwarden
-- Brave on Linux / Safari on iOS
+- [Fastmail (custom domain)](https://fastmail.com)
+- [Obsidian + Obsidian Sync](https://obsidian.com)
+- [Dropbox](https://dropbox.com)
+- [Bitwarden](https://bitwarden.com)
+- [Brave on Linux and iOS](https://brave.com)
+- [Safari on iOS/Default](https://apple.com/safari)
+- [Drafts on iOS](https://getdrafts.com)
+- [Apple Music](https://music.apple.com)
+- [Overcast on iOS](https://overcast.fm)
 
 ## Podcasts
-- (add your list)
+- 
+
+## Newsletters
+- 
