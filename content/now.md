@@ -20,7 +20,7 @@ title: "Darren Cohen - Now"
 - [The Bowery Boys](https://www.boweryboyshistory.com/)
 - [Conan O'Brien Needs a Friend](https://www.teamcoco.com/podcasts/conan-obrien-needs-a-friend)
 - [Cortex](https://www.relay.fm/cortex)
-- [Dan Le Batard Show](https://www.lebatardshow.com/)
+- [Dan Le Batard Show](https://www.lebatardaf.com/)
 - [Decoder](https://www.theverge.com/decoder-podcast-with-nilay-patel)
 - [Effectively Wild](https://effectivelywild.fangraphs.com/)
 - [If Books Could Kill](https://www.ifbookscouldkill.com/)
