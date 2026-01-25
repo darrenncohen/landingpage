@@ -7,7 +7,7 @@ title: "Darren Cohen"
 <h1>Darren Cohen</h1>
 
 <p class="tagline">
-Minimal tools, good links, and occasional notes.
+...a place for me to ramble and share a few things I use and like
 </p>
 
 <ul class="terminal-list">
