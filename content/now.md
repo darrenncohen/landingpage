@@ -26,7 +26,7 @@ title: "Darren Cohen - Now"
 - [If Books Could Kill](https://www.ifbookscouldkill.com/)
 - [Intelligent Machines](https://www.theverge.com/intelligent-machines)
 - [Pablo Torre Finds Out](https://www.pablo.show/)
-- [The Poscast](https://www.poscast.com/)
+- [The Poscast](https://podcasts.apple.com/us/podcast/the-poscast-with-joe-posnanski-michael-schur/id1147099367)
 - [Search Engine](https://www.searchengine.show/)
 - [Shutdown Fullcast](https://www.shutdownfullcast.com/)
 - [Split Zone Duo](https://www.splitzoneduo.com/)
