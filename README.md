@@ -1,5 +1,5 @@
-# Landing Page
+# Website
 
-This repository is just my static landing page for my personal domain. You can see it at [darrencohen.me](https://darrencohen.me)
+This repository is for the website hosted at my personal domain, [darrencohen.me](https://darrencohen.me)
 
-This page is being created on a Chromebook with the help of Gemeni. I am writing the code in VSCODE running online. 
+I created it on an HP PC running Linux Mint - XFCE using vscode with an assist from OpenAI's Codex. I will keep the blog updated using VIM on my Linux machine and a combination of Drafts and Working Copy on iOS. 
