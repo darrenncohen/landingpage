@@ -38,7 +38,6 @@ body {
   gap: 16px;
   margin-bottom: 28px;
   flex-wrap: wrap;
-  position: relative;
 }
 
 .brand{
@@ -66,53 +65,6 @@ body {
   opacity: 1;
 }
 
-.nav-toggle{
-  position: absolute;
-  left: -9999px;
-  width: 1px;
-  height: 1px;
-  opacity: 0;
-  pointer-events: none;
-}
-
-.nav-toggle-label{
-  display: none;
-  margin-left: auto;
-  width: 36px;
-  height: 30px;
-  align-items: center;
-  justify-content: center;
-  gap: 5px;
-  cursor: pointer;
-}
-
-.nav-toggle-label span{
-  display: block;
-  width: 22px;
-  height: 2px;
-  background: var(--text);
-}
-
-@media (max-width: 900px) {
-  .nav{
-    display: none;
-    width: 100%;
-    flex-direction: column;
-    gap: 8px;
-  }
-
-  .nav a{
-    padding: 6px 0;
-  }
-
-  .nav-toggle-label{
-    display: inline-flex;
-  }
-
-  .nav-toggle:checked + .nav-toggle-label + .nav{
-    display: flex;
-  }
-}
 
 
 .content h1 { line-height:1.15; margin-top: 0; }
