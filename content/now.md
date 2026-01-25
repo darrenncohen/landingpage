@@ -4,7 +4,7 @@ title: "Darren Cohen - Now"
 
 ## Apps & services
 - [Fastmail (custom domain)](https://fastmail.com)
-- [Obsidian + Obsidian Sync](https://obsidian.com)
+- [Obsidian + Obsidian Sync](https://obsidian.md/)
 - [Dropbox](https://dropbox.com)
 - [Bitwarden](https://bitwarden.com)
 - [Brave on Linux and iOS](https://brave.com)
