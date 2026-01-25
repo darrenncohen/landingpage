@@ -21,9 +21,9 @@ Minimal tools, good links, and occasional notes.
 
 <ul class="terminal-list">
   <li><a href="mailto:info@darrencohen.me">Email: info@darrencohen.me</a></li>
+  <li><a href="https://signal.me/#eu/lsA8ctyE3pFoxYdIDyxwrL9PmDUem_cElKY7MkQO6Qwpy23hbNhMM4uBBqgI9eVf" target="_blank" rel="noopener">Signal: @darrencohen.01</a></li>
   <li><a href="https://bsky.app/profile/darrencohen.me" target="_blank" rel="noopener">Bluesky</a></li>
   <li><a href="https://instagram.com/_darrencohen" target="_blank" rel="noopener">Instagram</a></li>
-  <li><a href="https://signal.me/#eu/lsA8ctyE3pFoxYdIDyxwrL9PmDUem_cElKY7MkQO6Qwpy23hbNhMM4uBBqgI9eVf" target="_blank" rel="noopener">Signal: @darrencohen.01</a></li>
 </ul>
 
 </div>
