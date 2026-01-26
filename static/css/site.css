@@ -70,6 +70,12 @@ body {
 .content h1 { line-height:1.15; margin-top: 0; }
 .subtitle { color: var(--muted); margin-top: -10px; }
 .meta { color: var(--muted); margin-top: -6px; font-size: .95rem; }
+.content img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 16px auto;
+}
 
 .posts { display:flex; flex-direction:column; gap: 18px; }
 .post { padding: 14px 0; border-bottom: 1px solid var(--border); }
