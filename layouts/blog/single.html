@@ -1,7 +1,7 @@
 {{ define "main" }}
   <h1>
     {{ with .Params.link }}
-      <a href="{{ . }}" target="_blank" rel="noopener">{{ $.Title }}</a>
+      <a href="{{ . }}" target="_blank" rel="noopener">🔗 {{ $.Title }}</a>
     {{ else }}
       {{ .Title }}
     {{ end }}

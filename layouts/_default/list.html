@@ -5,7 +5,11 @@
   <div class="posts">
     {{ range .Pages }}
       <div class="post">
-        <h2 class="post-title"><a href="{{ .RelPermalink }}">{{ .Title }}</a></h2>
+        <h2 class="post-title">
+          <a href="{{ .RelPermalink }}">
+            {{ with .Params.link }}🔗 {{ end }}{{ .Title }}
+          </a>
+        </h2>
         <p class="meta">{{ .Date.Format "Jan 2, 2006 · 3:04pm" }}</p>
         {{ with .Summary }}<p>{{ . }}</p>{{ end }}
       </div>
