@@ -5,6 +5,4 @@ tags: movies
 title: "The Rip on Netflix"
 ---
 
-![](/static/img/the_rip_review.png)
-
-
+![review of the rip on netflix, rated decent](/img/the_rip_review.png)
