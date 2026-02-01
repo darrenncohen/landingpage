@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Podcasts & Newsletters | Darren Cohen</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Table Layout: Title (60%) | Apple (20%) | Spotify (20%) */
+        @media (min-width: 768px) {
+            .podcast-grid {
+                display: grid;
+                grid-template-columns: 3fr 1fr 1fr !important;
+                align-items: center;
+                text-align: center;
+            }
+            .podcast-grid div:first-child { text-align: left; }
+        }
+        .podcast-link-icon {
+            font-size: 1.5rem;
+            transition: transform 0.2s ease;
+            display: inline-block;
+        }
+        .podcast-link-icon:hover { transform: scale(1.1); }
+        .apple-color { color: #fb2c50; }
+        .spotify-color { color: #1DB954; }
+        
+        /* Mobile adjustment */
+        @media (max-width: 767px) {
+            .podcast-grid {
+                display: flex;
+                justify-content: space-between;
+                flex-wrap: wrap;
+            }
+            .podcast-grid div:first-child { width: 100%; margin-bottom: 10px; font-weight: 600; }
+        }
+    </style>
+</head>
+<body>
+    <div class="links-header">
+        <h1>Podcasts & Newsletters</h1>
+        <p>I subscribe to dozens of feeds across my devices. My routine involves a heavy curation process: skimming new releases, selecting only the episodes that truly pique my interest to listen to, and archiving the rest.</p>
+        <a href="index.html" class="back-button">Back to Home</a>
+    </div>
+
+    <div class="links-section-container">
+        <div class="links-header-row podcast-grid">
+            <div>Show / Publication</div>
+            <div>Apple</div>
+            <div>Spotify</div>
+        </div>
+        
+        <div class="links-list-container">
+            <div class="link-list-item podcast-grid">
+                <div class="link-title">99% Invisible</div>
+                <div><a href="https://podcasts.apple.com/us/podcast/99-invisible/id394775318" target="_blank" class="podcast-link-icon apple-color"><i class="fab fa-apple"></i></a></div>
+                <div><a href="https://open.spotify.com/show/2VRSvAtvOEZkiR3RW99IuH" target="_blank" class="podcast-link-icon spotify-color"><i class="fab fa-spotify"></i></a></div>
+            </div>
+
+            <div class="link-list-item podcast-grid">
+                <div class="link-title">Accidental Tech Podcast</div>
+                <div><a href="https://podcasts.apple.com/us/podcast/accidental-tech-podcast/id617416468" target="_blank" class="podcast-link-icon apple-color"><i class="fab fa-apple"></i></a></div>
+                <div><a href="https://open.spotify.com/show/5ad06a42-5e55-54d4-aaf5-6bcb89428199" target="_blank" class="podcast-link-icon spotify-color"><i class="fab fa-spotify"></i></a></div>
+            </div>
+
+            <div class="link-list-item podcast-grid">
+                <div class="link-title">Bill Simmons Podcast</div>
+                <div><a href="https://podcasts.apple.com/us/podcast/the-bill-simmons-podcast/id1043699613" target="_blank" class="podcast-link-icon apple-color"><i class="fab fa-apple"></i></a></div>
+                <div><a href="https://open.spotify.com/show/079psButzpCf9gn8tG36gn" target="_blank" class="podcast-link-icon spotify-color"><i class="fab fa-spotify"></i></a></div>
+            </div>
+
+            <div class="link-list-item podcast-grid">
+                <div class="link-title">Conan O'Brien Needs a Friend</div>
+                <div><a href="https://podcasts.apple.com/us/podcast/conan-obrien-needs-a-friend/id1438054347" target="_blank" class="podcast-link-icon apple-color"><i class="fab fa-apple"></i></a></div>
+                <div><a href="https://open.spotify.com/show/3TlsTeW9m877o29yTszR29" target="_blank" class="podcast-link-icon spotify-color"><i class="fab fa-spotify"></i></a></div>
+            </div>
+
+            <div class="link-list-item podcast-grid">
+                <div class="link-title">Cortex</div>
+                <div><a href="https://podcasts.apple.com/us/podcast/cortex/id1001591696" target="_blank" class="podcast-link-icon apple-color"><i class="fab fa-apple"></i></a></div>
+                <div><a href="https://open.spotify.com/show/3TlsTeW9m877o29yTszR29" target="_blank" class="podcast-link-icon spotify-color"><i class="fab fa-spotify"></i></a></div>
+            </div>
+
+            <div class="link-list-item podcast-grid">
+                <div class="link-title">Decoder</div>
+                <div><a href="https://podcasts.apple.com/us/podcast/decoder-with-nilay-patel/id1011668648" target="_blank" class="podcast-link-icon apple-color"><i class="fab fa-apple"></i></a></div>
+                <div><a href="https://open.spotify.com/show/06MvLpDSt5B63y9oX4X1rN" target="_blank" class="podcast-link-icon spotify-color"><i class="fab fa-spotify"></i></a></div>
+            </div>
+
+            <div class="link-list-item podcast-grid">
+                <div class="link-title">Search Engine</div>
+                <div><a href="https://podcasts.apple.com/us/podcast/search-engine/id1614253637" target="_blank" class="podcast-link-icon apple-color"><i class="fab fa-apple"></i></a></div>
+                <div><a href="https://open.spotify.com/show/2T7C10jS5qE90T0R7p2kG0" target="_blank" class="podcast-link-icon spotify-color"><i class="fab fa-spotify"></i></a></div>
+            </div>
+
+            <div class="link-list-item podcast-grid">
+                <div class="link-title">The Talk Show</div>
+                <div><a href="https://podcasts.apple.com/us/podcast/the-talk-show-with-john-gruber/id528458508" target="_blank" class="podcast-link-icon apple-color"><i class="fab fa-apple"></i></a></div>
+                <div><a href="https://open.spotify.com/show/4O6f8wB9I7B5qX8w0w5fX0" target="_blank" class="podcast-link-icon spotify-color"><i class="fab fa-spotify"></i></a></div>
+            </div>
+
+            <div class="link-list-item podcast-grid">
+                <div class="link-title">The Vergecast</div>
+                <div><a href="https://podcasts.apple.com/us/podcast/the-vergecast/id430333725" target="_blank" class="podcast-link-icon apple-color"><i class="fab fa-apple"></i></a></div>
+                <div><a href="https://open.spotify.com/show/697S9T0TzX6p9tD4T4x1rN" target="_blank" class="podcast-link-icon spotify-color"><i class="fab fa-spotify"></i></a></div>
+            </div>
+
+            <div class="link-list-item podcast-grid">
+                <div class="link-title">This American Life</div>
+                <div><a href="https://podcasts.apple.com/us/podcast/this-american-life/id201671138" target="_blank" class="podcast-link-icon apple-color"><i class="fab fa-apple"></i></a></div>
+                <div><a href="https://open.spotify.com/show/2O3M0vLpDSt5B63y9oX4X1rN" target="_blank" class="podcast-link-icon spotify-color"><i class="fab fa-spotify"></i></a></div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="site-footer">
+        <p>Last updated: December 2025</p>
+        Hosted on <a href="https://github.com" target="_blank">GitHub</a>.
+    </footer>
+</body>
+</html>
