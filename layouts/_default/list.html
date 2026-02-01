@@ -11,7 +11,7 @@
           </a>
         </h2>
         <p class="meta">{{ .Date.Format "Jan 2, 2006 · 3:04pm" }}</p>
-        {{ with .Summary }}<p>{{ . }}</p>{{ end }}
+        {{ with .Content }}<p>{{ . }}</p>{{ end }}
       </div>
     {{ end }}
   </div>
