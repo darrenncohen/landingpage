@@ -1,5 +1,5 @@
 ---
-title: '"Coffee as a Treatment"'
+title: ""Coffee as a Treatment"
 date: 2026-02-01T07:45:00-05:00
 link: coffee-as-a-treatmhttps://arstechnica.com/health/2026/01/placebo-outperforms-lsd-microdosing-for-depression/ent
 source: '"Ars Tehnica"'
