@@ -12,18 +12,19 @@
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 
 <meta name="title" content="{{ .Title }} | {{ .Site.Title }}">
-<meta name="description" content="{{ .Summary | plainify }}">
+<meta name="description" content="{{ .Site.Title }}">
 
 <meta property="og:type" content="website">
 <meta property="og:title" content="{{ .Title }} | {{ .Site.Title }}">
-<meta property="og:description" content="{{ .Summary | plainify }}">
+<meta property="og:description" content="{{ .Site.Title }}">
 <meta property="og:image" content="{{ .Site.BaseURL }}og.jpg">
 <meta property="og:url" content="{{ .Permalink }}">
 
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="{{ .Title }} | {{ .Site.Title }}">
-<meta name="twitter:description" content="{{ .Summary | plainify }}">
+<meta name="twitter:description" content="{{ .Site.Title }}">
 <meta name="twitter:image" content="{{ .Site.BaseURL }}og.jpg">
+
   </head>
   <body>
     <main class="wrap">
