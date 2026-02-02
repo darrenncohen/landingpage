@@ -26,4 +26,6 @@ title: "Darren Cohen"
   <li><a href="https://instagram.com/_darrencohen" target="_blank" rel="noopener">Instagram</a></li>
 </ul>
 
+{{< recent-posts >}}
+
 </div>
