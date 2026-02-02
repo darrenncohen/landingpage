@@ -10,5 +10,5 @@ source: "Runa Sandvik-Twitter"
 
 ---
 
-This issue has been talked about for years, courts have been saying  that your face and/or fingerprint can be compelled to unlock your phone while they can't force you to give up the passcode in your head. John Gruber [wrote](https://daringfireball.net/2022/06/require_a_passcode_to_unlock_your_iphone)about this a few years, and the article contains some good advice that everyone should heed.
+This issue has been talked about for years, courts have been saying  that your face and/or fingerprint can be compelled to unlock your phone while they can't force you to give up the passcode in your head. John Gruber [wrote](https://daringfireball.net/2022/06/require_a_passcode_to_unlock_your_iphone)about this a few years ago, and the article contains some good advice that everyone should heed.
 
