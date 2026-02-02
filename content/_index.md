@@ -18,7 +18,7 @@ title: "Darren Cohen"
 </ul>
 
 <div class="divider"></div>
-
+<h2> Contact Me</h2>
 <ul class="terminal-list">
   <li><a href="mailto:info@darrencohen.me">Email: info@darrencohen.me</a></li>
   <li><a href="https://signal.me/#eu/lsA8ctyE3pFoxYdIDyxwrL9PmDUem_cElKY7MkQO6Qwpy23hbNhMM4uBBqgI9eVf" target="_blank" rel="noopener">Signal: @darrencohen.01</a></li>
