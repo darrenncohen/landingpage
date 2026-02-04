@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>News on Darren Cohen</title>
+    <link>http://localhost:1313/tags/news/</link>
+    <description>Recent content in News on Darren Cohen</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sun, 25 Jan 2026 00:00:00 +0000</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/news/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>There is no Such Thing as Other People&#39;s Children</title>
+      <link>http://localhost:1313/blog/no-such-thing/</link>
+      <pubDate>Sun, 25 Jan 2026 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/blog/no-such-thing/</guid>
+      <description>They made a mistake in picking Minneapolis. They came here believing that the same old lines of division that animate their entire political project&amp;ndash;race, culture, class&amp;ndash;would be reason enough to keep people in their homes while they went about their violent work. Instead we are out there in every place they are, showing them that every person in this city is one of our own, that there is no such thing as other people&amp;rsquo;s children, that collectively we are not afraid of staring them in the eye.</description>
+    </item>
+  </channel>
+</rss>
