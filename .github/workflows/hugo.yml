@@ -1,6 +1,6 @@
 diff --git a/.github/workflows/hugo.yml b/.github/workflows/hugo.yml
 new file mode 100644
-index 0000000000000000000000000000000000000000..38db3fac6d50303f594b6fd9e4a47d903173802a
+index 0000000000000000000000000000000000000000..603c3e20a71d5a2e1248e9224f4afbf88cc773d8
 --- /dev/null
 +++ b/.github/workflows/hugo.yml
 @@ -0,0 +1,53 @@
@@ -10,7 +10,7 @@ index 0000000000000000000000000000000000000000..38db3fac6d50303f594b6fd9e4a47d90
 +  push:
 +    branches:
 +      - main
-+  workflow_dispatch:
++  workflow_dispatch: {}
 +
 +permissions:
 +  contents: read
