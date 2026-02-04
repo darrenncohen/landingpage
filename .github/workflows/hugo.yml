@@ -54,6 +54,6 @@ index 0000000000000000000000000000000000000000..603c3e20a71d5a2e1248e9224f4afbf8
 +    needs: build
 +    runs-on: ubuntu-latest
 +    steps:
-+      - name: Deploy to GitHub Pages
++      - name: Publish Huge Site
 +        id: deployment
 +        uses: actions/deploy-pages@v4
