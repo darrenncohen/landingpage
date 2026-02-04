@@ -1,0 +1,59 @@
+diff --git a/.github/workflows/hugo.yml b/.github/workflows/hugo.yml
+new file mode 100644
+index 0000000000000000000000000000000000000000..38db3fac6d50303f594b6fd9e4a47d903173802a
+--- /dev/null
++++ b/.github/workflows/hugo.yml
+@@ -0,0 +1,53 @@
++name: Deploy Hugo site to Pages
++
++on:
++  push:
++    branches:
++      - main
++  workflow_dispatch:
++
++permissions:
++  contents: read
++  pages: write
++  id-token: write
++
++concurrency:
++  group: pages
++  cancel-in-progress: false
++
++jobs:
++  build:
++    runs-on: ubuntu-latest
++    steps:
++      - name: Checkout
++        uses: actions/checkout@v4
++        with:
++          fetch-depth: 0
++      - name: Setup Hugo
++        uses: peaceiris/actions-hugo@v2
++        with:
++          hugo-version: '0.126.1'
++          extended: true
++      - name: Setup Pages
++        id: pages
++        uses: actions/configure-pages@v5
++      - name: Build
++        env:
++          HUGO_ENVIRONMENT: production
++          HUGO_ENV: production
++        run: hugo --minify --baseURL "${{ steps.pages.outputs.base_url }}/"
++      - name: Upload artifact
++        uses: actions/upload-pages-artifact@v3
++        with:
++          path: ./public
++
++  deploy:
++    environment:
++      name: github-pages
++      url: ${{ steps.deployment.outputs.page_url }}
++    needs: build
++    runs-on: ubuntu-latest
++    steps:
++      - name: Deploy to GitHub Pages
++        id: deployment
++        uses: actions/deploy-pages@v4
