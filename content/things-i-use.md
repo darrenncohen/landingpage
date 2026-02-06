@@ -13,7 +13,7 @@ title: "Darren Cohen - Things I Use"
 - [Neovim - Linux/MacOS](https://neovim.io)
 - [Working Copy - iOS](https://workingcopyapp.com)
 - [Textastic - iOS](https://textasticapp.com)
-- [Spotify](https://spotify.com)
+- [Apple Music](https://music.apple.com)
 - [Overcast on iOS](https://overcast.fm)
 - [Audible](https://audible.com)
 - [Signal](https://signal.org/)
