@@ -4,7 +4,7 @@ title: "Darren Cohen - Things I Use"
 
 ## Apps & services
 - [Gmail](https://gmail.com)
-- [Obsidian](https://keep.google.com)
+- [Google Keep](https://keep.google.com)
 - [Google Drive](https://drive.google.com)
 - [Bitwarden](https://bitwarden.com)
 - [Brave on Linux and iOS](https://brave.com)
