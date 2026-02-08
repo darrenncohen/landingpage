@@ -3,11 +3,11 @@ title: "Darren Cohen - Things I Use"
 ---
 
 ## Apps & services
-- [Gmail](https://gmail.com)
-- [Google Keep](https://keep.google.com)
-- [Google Drive](https://drive.google.com)
+- [Gmail](https://Fastmail.com)
+- [Apple Notes](https://apple.com)
+- [Dropbox](https://drive.google.com)
 - [Bitwarden](https://bitwarden.com)
-- [Brave on Linux and iOS](https://brave.com)
+- [Firefox on Linux and iOS](https://firefox.com)
 - [Safari on iOS/Default](https://apple.com/safari)
 - [Raindrop](https://raindrop.io)
 - [Neovim - Linux/MacOS](https://neovim.io)
