@@ -3,7 +3,7 @@ title: "Darren Cohen - Things I Use"
 ---
 
 ## Apps & services
-- [Gmail](https://Fastmail.com)
+- [Fastmail](https://Fastmail.com)
 - [Apple Notes](https://apple.com)
 - [Dropbox](https://drive.google.com)
 - [Bitwarden](https://bitwarden.com)
