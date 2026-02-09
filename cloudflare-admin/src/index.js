@@ -1,4 +1,5 @@
 const MICROBLOG_DATA_PATH = "data/microblog.json";
+const MICROBLOG_POSTS_DIR = "p";
 
 export default {
   async fetch(request, env) {
@@ -136,6 +137,7 @@ function adminHtml(env) {
 
     <div class="row">
       <label><input type="checkbox" name="publishPhotoStream" /> Add to photo stream</label>
+      <label><input type="checkbox" name="attachPhotoToSocial" /> Attach photo to cross-posts</label>
     </div>
 
     <button class="btn" type="submit">Publish</button>
@@ -185,7 +187,27 @@ async function handlePublish(request, env) {
     const postToBluesky = form.get("postToBluesky") === "on";
     const postToMastodon = form.get("postToMastodon") === "on";
     const includeLink = form.get("includePermalink") === "on";
-    const micro = await publishMicroblogPost(microText, postToBluesky, postToMastodon, includeLink, github, env);
+    const attachPhotoToSocial = form.get("attachPhotoToSocial") === "on";
+    const photoFile = form.get("photoFile");
+    const photoAttachment =
+      attachPhotoToSocial && photoFile && typeof photoFile.arrayBuffer === "function" && photoFile.size > 0
+        ? {
+            name: photoFile.name || "photo.jpg",
+            mime: photoFile.type || "image/jpeg",
+            bytes: await photoFile.arrayBuffer(),
+            alt: String(form.get("photoCaption") || "").trim() || "Photo"
+          }
+        : null;
+
+    const micro = await publishMicroblogPost(
+      microText,
+      postToBluesky,
+      postToMastodon,
+      includeLink,
+      photoAttachment,
+      github,
+      env
+    );
     response.microblog = micro.post;
     response.crosspost = micro.crosspost;
     if (micro.crosspostErrors && Object.keys(micro.crosspostErrors).length) {
@@ -218,18 +240,22 @@ async function queuePhotoUpload(file, form, github) {
   return { incomingPath, takenOn };
 }
 
-async function publishMicroblogPost(text, postToBluesky, postToMastodon, includeLink, github, env) {
+async function publishMicroblogPost(text, postToBluesky, postToMastodon, includeLink, photoAttachment, github, env) {
   const existing = await github.readTextWithSha(MICROBLOG_DATA_PATH);
   const feed = existing?.text ? JSON.parse(existing.text) : [];
   const existingSha = existing?.sha || null;
   const id = `post-${new Date().toISOString().replace(/[-:.TZ]/g, "").slice(0, 14)}`;
   const createdAt = new Date().toISOString();
-  const postUrl = `${(env.SITE_BASE_URL || "").replace(/\/$/, "")}/microblog.html#${id}`;
+  const siteBase = (env.SITE_BASE_URL || "").replace(/\/$/, "");
+  const permalinkUrl = `${siteBase}/${MICROBLOG_POSTS_DIR}/${id}.html`;
+  const urlsInText = extractUrls(text);
+  const primaryUrlForCard = urlsInText[0] || (includeLink ? permalinkUrl : "");
 
   const entry = {
     id,
     text,
-    createdAt
+    createdAt,
+    permalink: permalinkUrl
   };
 
   const crosspost = [];
@@ -237,7 +263,13 @@ async function publishMicroblogPost(text, postToBluesky, postToMastodon, include
 
   if (postToBluesky && env.BLUESKY_HANDLE && env.BLUESKY_APP_PASSWORD) {
     try {
-      const blueskyUrl = await postToBlueskyApi(text, includeLink ? postUrl : "", env);
+      const blueskyUrl = await postToBlueskyApi(
+        text,
+        includeLink ? permalinkUrl : "",
+        primaryUrlForCard,
+        photoAttachment,
+        env
+      );
       if (blueskyUrl) {
         entry.blueskyUrl = blueskyUrl;
         crosspost.push("Bluesky");
@@ -253,7 +285,12 @@ async function publishMicroblogPost(text, postToBluesky, postToMastodon, include
 
   if (postToMastodon && env.MASTODON_BASE_URL && env.MASTODON_ACCESS_TOKEN) {
     try {
-      const mastodonUrl = await postToMastodonApi(text, includeLink ? postUrl : "", env);
+      const mastodonUrl = await postToMastodonApi(
+        text,
+        includeLink ? permalinkUrl : "",
+        photoAttachment,
+        env
+      );
       if (mastodonUrl) {
         entry.mastodonUrl = mastodonUrl;
         crosspost.push("Mastodon");
@@ -268,13 +305,18 @@ async function publishMicroblogPost(text, postToBluesky, postToMastodon, include
   }
 
   // Always publish to the site, even if cross-posting fails.
+  await github.putFileText(
+    `${MICROBLOG_POSTS_DIR}/${id}.html`,
+    microblogPostHtml({ siteBase, id, text, createdAt }),
+    `Publish microblog permalink: ${id}`
+  );
   feed.unshift(entry);
   await github.putFileText(MICROBLOG_DATA_PATH, `${JSON.stringify(feed, null, 2)}\n`, `Publish microblog post: ${id}`, existingSha);
 
   return { post: entry, crosspost, crosspostErrors };
 }
 
-async function postToBlueskyApi(text, postUrl, env) {
+async function postToBlueskyApi(text, permalinkUrl, cardUrl, photoAttachment, env) {
   const sessionRes = await fetch("https://bsky.social/xrpc/com.atproto.server.createSession", {
     method: "POST",
     headers: { "content-type": "application/json" },
@@ -289,8 +331,29 @@ async function postToBlueskyApi(text, postUrl, env) {
     throw new Error(`Bluesky login failed (${sessionRes.status}): ${detail.slice(0, 220)}`);
   }
 
-  const message = postUrl ? `${text}\n\n${postUrl}`.trim() : text;
+  const message = permalinkUrl ? `${text}\n\n${permalinkUrl}`.trim() : text;
   if (!message.trim()) return "";
+  const facets = buildBlueskyLinkFacets(message);
+
+  // Bluesky can only have one embed. Prefer image embed if we have an attachment.
+  let embed = undefined;
+  if (photoAttachment) {
+    const blob = await blueskyUploadBlob(session.accessJwt, photoAttachment.bytes, photoAttachment.mime);
+    embed = {
+      $type: "app.bsky.embed.images",
+      images: [
+        {
+          alt: photoAttachment.alt || "Photo",
+          image: blob
+        }
+      ]
+    };
+  } else if (cardUrl) {
+    const external = await blueskyBuildExternalEmbed(session.accessJwt, cardUrl);
+    if (external) {
+      embed = external;
+    }
+  }
   const recordRes = await fetch("https://bsky.social/xrpc/com.atproto.repo.createRecord", {
     method: "POST",
     headers: {
@@ -303,6 +366,8 @@ async function postToBlueskyApi(text, postUrl, env) {
       record: {
         $type: "app.bsky.feed.post",
         text: message,
+        facets,
+        embed,
         createdAt: new Date().toISOString()
       }
     })
