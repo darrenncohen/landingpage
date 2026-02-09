@@ -3,13 +3,14 @@ const MICROBLOG_DATA_PATH = "data/microblog.json";
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
+    const pathname = url.pathname.replace(/\/+$/, "") || "/";
     if (request.method === "OPTIONS") {
       return new Response(null, { headers: corsHeaders(request, env) });
     }
-    if (url.pathname === "/health") {
+    if (pathname === "/health") {
       return jsonResponse({ ok: true }, 200, request, env);
     }
-    if (url.pathname === "/admin" && request.method === "GET") {
+    if (pathname === "/admin" && request.method === "GET") {
       // Serve the admin UI from the Worker itself to avoid CORS/Access redirect issues.
       return new Response(adminHtml(env), {
         status: 200,
@@ -19,7 +20,7 @@ export default {
         }
       });
     }
-    if (url.pathname === "/api/publish" && request.method === "POST") {
+    if (pathname === "/api/publish" && request.method === "POST") {
       try {
         await assertAuthorized(request, env);
         const result = await handlePublish(request, env);
