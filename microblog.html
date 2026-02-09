@@ -21,11 +21,20 @@
   <script src="js/microblog.js" defer></script>
 </head>
 <body>
-  <div class="links-header">
-    <h1>Microblog</h1>
-    <p>Short notes and links.</p>
-    <a href="index.html" class="back-button">Back to Home</a>
-  </div>
+  <header class="card-wrapper profile-card" style="margin-top: 1rem;">
+    <div class="profile-picture-container">
+      <img src="img/profile_picture.jpg"
+           alt="Darren Cohen Profile Picture"
+           onerror="this.onerror=null; this.src='https://placehold.co/144x144/cccccc/ffffff?text=Error';">
+    </div>
+    <h1 class="profile-name">Darren Cohen</h1>
+    <p class="profile-tagline">Microblog</p>
+
+    <nav class="mini-nav" aria-label="Microblog navigation">
+      <a class="mini-nav-pill" href="index.html">Home</a>
+      <a class="mini-nav-pill" href="gallery.html">Photos</a>
+    </nav>
+  </header>
 
   <div class="content-container">
     <div class="content-card" id="microblog-feed">

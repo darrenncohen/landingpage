@@ -22,14 +22,19 @@
     <script src="js/gallery.js" defer></script>
 </head>
 <body class="photo-stream-page">
-    <header class="photo-stream-topbar">
-        <div class="photo-stream-topbar-inner">
-            <div class="photo-stream-title-group">
-                <h1>Photo Stream</h1>
-                <p>My Personal Place to Share Photos.</p>
-            </div>
-            <a href="index.html" class="back-button">Back to Home</a>
+    <header class="card-wrapper profile-card" style="margin-top: 1rem;">
+        <div class="profile-picture-container">
+            <img src="img/profile_picture.jpg"
+                 alt="Darren Cohen Profile Picture"
+                 onerror="this.onerror=null; this.src='https://placehold.co/144x144/cccccc/ffffff?text=Error';">
         </div>
+        <h1 class="profile-name">Darren Cohen</h1>
+        <p class="profile-tagline">Photo Stream</p>
+
+        <nav class="mini-nav" aria-label="Photo stream navigation">
+            <a class="mini-nav-pill" href="index.html">Home</a>
+            <a class="mini-nav-pill" href="microblog.html">Microblog</a>
+        </nav>
     </header>
 
     <main class="photo-feed-shell">
