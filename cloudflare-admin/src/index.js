@@ -89,6 +89,12 @@ function adminHtml(env) {
         if(payload.photo){ parts.push('Photo queued'); }
         if(payload.microblog){ parts.push('Microblog published'); }
         if(payload.crosspost&&payload.crosspost.length){ parts.push('Cross-posted: '+payload.crosspost.join(', ')); }
+        if(payload.crosspostErrors){
+          const keys = Object.keys(payload.crosspostErrors);
+          if(keys.length){
+            parts.push('Cross-post errors: '+keys.map(k=>k+': '+payload.crosspostErrors[k]).join(' | '));
+          }
+        }
         status.className = 'status ok';
         status.textContent = parts.join(' | ') || 'Done';
         form.reset();
@@ -111,6 +117,7 @@ function adminHtml(env) {
       <label><input type="checkbox" name="publishMicroblog" checked /> Publish microblog entry</label>
       <label><input type="checkbox" name="postToBluesky" /> Cross-post to Bluesky</label>
       <label><input type="checkbox" name="postToMastodon" /> Cross-post to Mastodon</label>
+      <label><input type="checkbox" name="includePermalink" /> Include link back</label>
     </div>
 
     <hr />
@@ -177,9 +184,13 @@ async function handlePublish(request, env) {
     }
     const postToBluesky = form.get("postToBluesky") === "on";
     const postToMastodon = form.get("postToMastodon") === "on";
-    const micro = await publishMicroblogPost(microText, postToBluesky, postToMastodon, github, env);
+    const includeLink = form.get("includePermalink") === "on";
+    const micro = await publishMicroblogPost(microText, postToBluesky, postToMastodon, includeLink, github, env);
     response.microblog = micro.post;
     response.crosspost = micro.crosspost;
+    if (micro.crosspostErrors && Object.keys(micro.crosspostErrors).length) {
+      response.crosspostErrors = micro.crosspostErrors;
+    }
   }
 
   return response;
@@ -207,7 +218,7 @@ async function queuePhotoUpload(file, form, github) {
   return { incomingPath, takenOn };
 }
 
-async function publishMicroblogPost(text, postToBluesky, postToMastodon, github, env) {
+async function publishMicroblogPost(text, postToBluesky, postToMastodon, includeLink, github, env) {
   const existing = await github.readTextWithSha(MICROBLOG_DATA_PATH);
   const feed = existing?.text ? JSON.parse(existing.text) : [];
   const existingSha = existing?.sha || null;
@@ -222,28 +233,45 @@ async function publishMicroblogPost(text, postToBluesky, postToMastodon, github,
   };
 
   const crosspost = [];
+  const crosspostErrors = {};
 
   if (postToBluesky && env.BLUESKY_HANDLE && env.BLUESKY_APP_PASSWORD) {
-    const blueskyUrl = await postToBlueskyApi(text, postUrl, env);
-    if (blueskyUrl) {
-      entry.blueskyUrl = blueskyUrl;
-      crosspost.push("Bluesky");
+    try {
+      const blueskyUrl = await postToBlueskyApi(text, includeLink ? postUrl : "", env);
+      if (blueskyUrl) {
+        entry.blueskyUrl = blueskyUrl;
+        crosspost.push("Bluesky");
+      } else {
+        crosspostErrors.Bluesky = "Unknown failure";
+      }
+    } catch (error) {
+      crosspostErrors.Bluesky = error.message || "Failed";
     }
+  } else if (postToBluesky) {
+    crosspostErrors.Bluesky = "Missing BLUESKY_HANDLE or BLUESKY_APP_PASSWORD";
   }
 
   if (postToMastodon && env.MASTODON_BASE_URL && env.MASTODON_ACCESS_TOKEN) {
-    const mastodonUrl = await postToMastodonApi(text, postUrl, env);
-    if (mastodonUrl) {
-      entry.mastodonUrl = mastodonUrl;
-      crosspost.push("Mastodon");
+    try {
+      const mastodonUrl = await postToMastodonApi(text, includeLink ? postUrl : "", env);
+      if (mastodonUrl) {
+        entry.mastodonUrl = mastodonUrl;
+        crosspost.push("Mastodon");
+      } else {
+        crosspostErrors.Mastodon = "Unknown failure";
+      }
+    } catch (error) {
+      crosspostErrors.Mastodon = error.message || "Failed";
     }
+  } else if (postToMastodon) {
+    crosspostErrors.Mastodon = "Missing MASTODON_BASE_URL or MASTODON_ACCESS_TOKEN";
   }
 
   // Always publish to the site, even if cross-posting fails.
   feed.unshift(entry);
   await github.putFileText(MICROBLOG_DATA_PATH, `${JSON.stringify(feed, null, 2)}\n`, `Publish microblog post: ${id}`, existingSha);
 
-  return { post: entry, crosspost };
+  return { post: entry, crosspost, crosspostErrors };
 }
 
 async function postToBlueskyApi(text, postUrl, env) {
@@ -260,7 +288,8 @@ async function postToBlueskyApi(text, postUrl, env) {
     return "";
   }
 
-  const message = `${text}\n\n${postUrl}`.trim();
+  const message = postUrl ? `${text}\n\n${postUrl}`.trim() : text;
+  if (!message.trim()) return "";
   const recordRes = await fetch("https://bsky.social/xrpc/com.atproto.repo.createRecord", {
     method: "POST",
     headers: {
@@ -278,7 +307,10 @@ async function postToBlueskyApi(text, postUrl, env) {
     })
   });
   const record = await recordRes.json().catch(() => null);
-  if (!recordRes.ok || !record?.uri) return "";
+  if (!recordRes.ok || !record?.uri) {
+    const errorText = JSON.stringify(record || {});
+    throw new Error(`Bluesky post failed (${recordRes.status}): ${errorText.slice(0, 220)}`);
+  }
 
   const uriParts = String(record.uri).split("/");
   const postRkey = uriParts[uriParts.length - 1];
@@ -289,7 +321,8 @@ async function postToMastodonApi(text, postUrl, env) {
   const base = String(env.MASTODON_BASE_URL || "").replace(/\/$/, "");
   if (!base) return "";
   const body = new URLSearchParams();
-  body.set("status", `${text}\n\n${postUrl}`.trim());
+  const statusText = postUrl ? `${text}\n\n${postUrl}`.trim() : text;
+  body.set("status", statusText.trim());
   body.set("visibility", env.MASTODON_VISIBILITY || "unlisted");
 
   const res = await fetch(`${base}/api/v1/statuses`, {
@@ -301,7 +334,10 @@ async function postToMastodonApi(text, postUrl, env) {
     body: body.toString()
   });
   const payload = await res.json().catch(() => null);
-  if (!res.ok || !payload?.url) return "";
+  if (!res.ok || !payload?.url) {
+    const errorText = JSON.stringify(payload || {});
+    throw new Error(`Mastodon post failed (${res.status}): ${errorText.slice(0, 220)}`);
+  }
   return payload.url;
 }
 
