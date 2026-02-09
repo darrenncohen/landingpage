@@ -348,11 +348,16 @@ function createGithubClient(env) {
   const token = env.GITHUB_TOKEN;
   const branch = env.GITHUB_BRANCH || "main";
   const baseUrl = `https://api.github.com/repos/${owner}/${repo}/contents/`;
+  const userAgent = env.GITHUB_USER_AGENT || "landingpage-admin-worker";
 
   async function getFile(filePath) {
     const encodedPath = encodePath(filePath);
     const response = await fetch(`${baseUrl}${encodedPath}?ref=${encodeURIComponent(branch)}`, {
-      headers: { authorization: `Bearer ${token}`, accept: "application/vnd.github+json" }
+      headers: {
+        authorization: `Bearer ${token}`,
+        accept: "application/vnd.github+json",
+        "user-agent": userAgent
+      }
     });
     if (response.status === 404) return null;
     if (!response.ok) {
@@ -378,7 +383,8 @@ function createGithubClient(env) {
       headers: {
         authorization: `Bearer ${token}`,
         accept: "application/vnd.github+json",
-        "content-type": "application/json"
+        "content-type": "application/json",
+        "user-agent": userAgent
       },
       body: JSON.stringify(body)
     });
