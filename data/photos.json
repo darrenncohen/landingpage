@@ -2,9 +2,15 @@
   {
     "id": "cold-day-cortado-nyc",
     "src": "images/cold-day-cortado-nyc.jpeg",
+<<<<<<< HEAD
     "alt": "a cortado and a book on a cold day",
     "caption": "a cortado and a book on a cold day",
     "location": "",
+=======
+    "alt": "2026 01 18 cold day cortado nyc a cortado and a book on a cold day",
+    "caption": "2026 01 18 cold day cortado nyc a cortado and a book on a cold day",
+    "location": "a cortado and a book on a cold day",
+>>>>>>> 724c4173b82534566c7c3fc7c08e437595df63b1
     "takenOn": "2026-01-18"
   },
   {
