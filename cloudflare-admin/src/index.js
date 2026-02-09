@@ -76,18 +76,19 @@ function adminHtml(env) {
   </style>
 	  <script>
 	    function setDefaults(){
+	      if(document.documentElement.dataset.defaultsApplied) return;
 	      // Defeat browser restore/autofill so "photo stream" stays off by default.
 	      const photoStream = document.querySelector('input[name="publishPhotoStream"]');
 	      const attachPhoto = document.querySelector('input[name="attachPhotoToSocial"]');
 	      if(photoStream) photoStream.checked = false;
 	      if(attachPhoto) attachPhoto.checked = false;
+	      document.documentElement.dataset.defaultsApplied = "1";
 	    }
 	    window.addEventListener('pageshow', setDefaults);
 
 	    async function publish(e){
 	      e.preventDefault();
 	      const form = e.target;
-	      setDefaults();
 	      const status = document.getElementById('status');
 	      status.className = 'status muted';
 	      status.textContent = 'Publishing...';
@@ -122,7 +123,7 @@ function adminHtml(env) {
 
 	  <form onsubmit="publish(event)" autocomplete="off">
     <label for="microText">Microblog text</label>
-    <textarea id="microText" name="microText" placeholder="Optional if uploading only a photo"></textarea>
+    <textarea id="microText" name="microText" placeholder="Optional when uploading a photo to the stream (we'll use the photo caption + a gallery link)"></textarea>
 
     <div class="row">
       <label><input type="checkbox" name="publishMicroblog" checked /> Publish microblog entry</label>
@@ -184,16 +185,27 @@ async function handlePublish(request, env) {
     const photoFile = form.get("photoFile");
     if (photoFile && typeof photoFile.arrayBuffer === "function" && photoFile.size > 0) {
       response.photo = await queuePhotoUpload(photoFile, form, github);
+      const siteBase = String(env.SITE_BASE_URL || "").replace(/\/$/, "");
+      if (siteBase && response.photo?.id) {
+        response.photo.galleryUrl = `${siteBase}/gallery.html#${response.photo.id}`;
+      }
     } else if (!publishMicroblog) {
       throw httpError(400, "Photo file is required for photo stream publish");
     }
   }
 
   if (publishMicroblog) {
-    const microText = String(form.get("microText") || "").trim();
+    let microText = String(form.get("microText") || "").trim();
     if (!microText) {
-      throw httpError(400, "Microblog text is required");
+      // Convenience: if you're uploading a photo to the stream, auto-generate the microblog text.
+      if (publishPhotoStream && response.photo?.id) {
+        const caption = String(form.get("photoCaption") || "").trim() || "Photo";
+        const siteBase = String(env.SITE_BASE_URL || "").replace(/\/$/, "");
+        const galleryUrl = siteBase ? `${siteBase}/gallery.html#${response.photo.id}` : `gallery.html#${response.photo.id}`;
+        microText = `${caption}\n\n${galleryUrl}`.trim();
+      }
     }
+    if (!microText) throw httpError(400, "Microblog text is required");
     const postToBluesky = form.get("postToBluesky") === "on";
     const postToMastodon = form.get("postToMastodon") === "on";
     const includeLink = form.get("includePermalink") === "on";
@@ -237,6 +249,17 @@ async function queuePhotoUpload(file, form, github) {
   const slug = slugify(slugSource);
   const ext = extensionFromFilename(file.name || "upload.jpg");
 
+  // Reserve a stable ID at upload time so we can link to it immediately (even before the GitHub Action runs).
+  // The GitHub Action reads incoming/<name>.json and will honor sidecar.id when generating data/photos.json.
+  const dateCompact = takenOn.replaceAll("-", "");
+  const suffixBytes = new Uint8Array(4);
+  crypto.getRandomValues(suffixBytes);
+  const suffix = Array.from(suffixBytes)
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join("");
+  const idPrefix = slugify(caption || slugSource || "photo").slice(0, 32) || "photo";
+  const reservedId = `${idPrefix}-${dateCompact}-${suffix}`;
+
   const captionPart = slugify(caption || slugSource);
   const locationPart = slugify(location);
   let incomingName = `${takenOn}__${slug}__${captionPart}.${ext}`;
@@ -247,7 +270,18 @@ async function queuePhotoUpload(file, form, github) {
   const buffer = await file.arrayBuffer();
   await github.putFileBinary(incomingPath, buffer, `Queue photo upload: ${slug}`);
 
-  return { incomingPath, takenOn };
+  const baseName = incomingName.slice(0, -(`.${ext}`.length));
+  const sidecarPath = `incoming/${baseName}.json`;
+  const sidecar = {
+    id: reservedId,
+    takenOn,
+    caption,
+    location,
+    alt: caption || "Photo"
+  };
+  await github.putFileText(sidecarPath, `${JSON.stringify(sidecar, null, 2)}\n`, `Queue photo metadata: ${slug}`);
+
+  return { id: reservedId, incomingPath, sidecarPath, takenOn };
 }
 
 async function publishMicroblogPost(text, postToBluesky, postToMastodon, includeLink, photoAttachment, github, env) {

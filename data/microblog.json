@@ -1,40 +1,5 @@
 [
   {
-    "id": "post-20260209203208",
-    "text": "Testing, last time with link",
-    "createdAt": "2026-02-09T20:32:08.835Z",
-    "mastodonUrl": "https://mastodon.social/@darrencohen_/116042572043271508"
-  },
-  {
-    "id": "post-20260209201902",
-    "text": "test",
-    "createdAt": "2026-02-09T20:19:02.821Z",
-    "blueskyUrl": "https://bsky.app/profile/darrencohen.me/post/3mehbgtnefw24"
-  },
-  {
-    "id": "post-20260209201617",
-    "text": "one more test",
-    "createdAt": "2026-02-09T20:16:17.411Z",
-    "mastodonUrl": "https://mastodon.social/@darrencohen_/116042509692161360"
-  },
-  {
-    "id": "post-20260209201255",
-    "text": "Testing",
-    "createdAt": "2026-02-09T20:12:55.545Z",
-    "mastodonUrl": "https://mastodon.social/@darrencohen_/116042496461091393"
-  },
-  {
-    "id": "post-20260209200851",
-    "text": "It might hit 40 this week, now it's time for baseball!",
-    "createdAt": "2026-02-09T20:08:51.704Z",
-    "mastodonUrl": "https://mastodon.social/@darrencohen_/116042480478446746"
-  },
-  {
-    "id": "post-20260209194241",
-    "text": "Testing the final thing",
-    "createdAt": "2026-02-09T19:42:41.375Z"
-  },
-  {
     "id": "post-20260209191326",
     "text": "My first test message!",
     "createdAt": "2026-02-09T19:13:26.126Z"
