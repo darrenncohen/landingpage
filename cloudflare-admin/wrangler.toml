@@ -4,6 +4,7 @@ compatibility_date = "2025-12-01"
 
 [vars]
 SITE_BASE_URL = "https://darrencohen.me"
+ADMIN_ORIGIN = "https://darrencohen.me"
 GITHUB_BRANCH = "main"
 MASTODON_VISIBILITY = "unlisted"
 

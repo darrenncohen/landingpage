@@ -36,6 +36,7 @@
     try {
       var response = await fetch(endpoint, {
         method: "POST",
+        credentials: "include",
         body: data
       });
       var payload = await response.json().catch(function () {

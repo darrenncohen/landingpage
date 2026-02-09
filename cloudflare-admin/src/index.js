@@ -290,11 +290,14 @@ async function readJsonFile(github, filePath, fallbackValue) {
 
 function corsHeaders(request, env) {
   const requestOrigin = request.headers.get("origin") || "";
-  const allowedOrigin = env.ADMIN_ORIGIN || requestOrigin || "*";
+  const defaultOrigin = (env.SITE_BASE_URL || "").replace(/\/$/, "");
+  const configuredOrigin = (env.ADMIN_ORIGIN || "").replace(/\/$/, "");
+  const allowedOrigin = configuredOrigin || defaultOrigin || requestOrigin;
   return {
     "access-control-allow-origin": allowedOrigin,
+    "access-control-allow-credentials": "true",
     "access-control-allow-methods": "POST, OPTIONS",
-    "access-control-allow-headers": "content-type, cf-access-jwt-assertion",
+    "access-control-allow-headers": "content-type",
     "access-control-max-age": "86400"
   };
 }
