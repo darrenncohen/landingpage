@@ -33,13 +33,40 @@ jobs:
         run: node scripts/optimize-gallery-images.mjs
 
       - name: Commit and push generated updates
+        id: commit
         run: |
           if [[ -n "$(git status --porcelain)" ]]; then
             git config user.name "github-actions[bot]"
             git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-            git add data/photos.json images incoming
+            git add data images incoming
             git commit -m "Process incoming photos"
             git push
+            echo "pushed=1" >> "$GITHUB_OUTPUT"
           else
             echo "No changes to commit."
+            echo "pushed=0" >> "$GITHUB_OUTPUT"
           fi
+
+      - name: Trigger deferred cross-posts (optional)
+        if: steps.commit.outputs.pushed == '1'
+        env:
+          WORKER_CALLBACK_URL: ${{ secrets.WORKER_CALLBACK_URL }}
+          WORKER_ACTION_SECRET: ${{ secrets.WORKER_ACTION_SECRET }}
+        run: |
+          if [[ -z "${WORKER_CALLBACK_URL}" || -z "${WORKER_ACTION_SECRET}" ]]; then
+            echo "Deferred cross-post callback not configured (missing WORKER_CALLBACK_URL or WORKER_ACTION_SECRET)."
+            exit 0
+          fi
+          if [[ ! -f data/last-processed-photos.json ]]; then
+            echo "No data/last-processed-photos.json; nothing to trigger."
+            exit 0
+          fi
+          IDS_JSON=$(node -e "const d=require('./data/last-processed-photos.json'); process.stdout.write(JSON.stringify(d.ids||[]));")
+          if [[ "${IDS_JSON}" == "[]" ]]; then
+            echo "No processed photo IDs; skipping."
+            exit 0
+          fi
+          curl -sS -X POST "${WORKER_CALLBACK_URL}" \
+            -H "content-type: application/json" \
+            -H "x-action-secret: ${WORKER_ACTION_SECRET}" \
+            --data "{\"photoIds\": ${IDS_JSON}}"

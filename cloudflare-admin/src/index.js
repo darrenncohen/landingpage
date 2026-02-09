@@ -1,5 +1,6 @@
 const MICROBLOG_DATA_PATH = "data/microblog.json";
 const MICROBLOG_POSTS_DIR = "p";
+const PENDING_CROSSPOSTS_PATH = "data/pending-crossposts.json";
 
 export default {
   async fetch(request, env) {
@@ -34,6 +35,16 @@ export default {
       try {
         await assertAuthorized(request, env);
         const result = await handlePublish(request, env);
+        return jsonResponse(result, 200, request, env);
+      } catch (error) {
+        const status = error.status || 500;
+        return jsonResponse({ error: error.message || "Request failed" }, status, request, env);
+      }
+    }
+    if (pathname === "/api/action/crosspost" && request.method === "POST") {
+      try {
+        await assertActionAuthorized(request, env);
+        const result = await handleActionCrosspost(request, env);
         return jsonResponse(result, 200, request, env);
       } catch (error) {
         const status = error.status || 500;
@@ -130,6 +141,7 @@ function adminHtml(env) {
       <label><input type="checkbox" name="postToBluesky" /> Cross-post to Bluesky</label>
       <label><input type="checkbox" name="postToMastodon" /> Cross-post to Mastodon</label>
       <label><input type="checkbox" name="includePermalink" /> Include link back</label>
+      <label><input type="checkbox" name="deferCrosspost" checked /> Defer cross-post until photo is live</label>
     </div>
 
     <hr />
@@ -165,6 +177,35 @@ function escapeHtml(value) {
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;")
     .replace(/'/g, "&#39;");
+}
+
+async function enqueueDeferredCrosspost(job, github, env) {
+  const siteBase = String(env.SITE_BASE_URL || "").replace(/\/$/, "");
+  const entry = {
+    id: `job-${new Date().toISOString().replace(/[-:.TZ]/g, "").slice(0, 14)}-${Math.floor(Math.random() * 10000)}`,
+    createdAt: new Date().toISOString(),
+    microblogId: String(job.microblogId || "").trim(),
+    photoId: String(job.photoId || "").trim(),
+    text: String(job.text || "").trim(),
+    includePermalink: Boolean(job.includePermalink),
+    attachPhotoToSocial: Boolean(job.attachPhotoToSocial),
+    providers: {
+      bluesky: Boolean(job.providers?.bluesky),
+      mastodon: Boolean(job.providers?.mastodon)
+    },
+    done: { bluesky: false, mastodon: false },
+    attempts: 0,
+    siteBase
+  };
+
+  const existing = await github.readTextWithSha(PENDING_CROSSPOSTS_PATH);
+  const list = existing?.text ? safeJsonParse(existing.text, []) : [];
+  if (!Array.isArray(list)) {
+    throw httpError(500, "Pending crosspost queue is corrupted");
+  }
+  list.unshift(entry);
+  await github.putFileText(PENDING_CROSSPOSTS_PATH, `${JSON.stringify(list, null, 2)}\n`, `Queue deferred crosspost: ${entry.id}`, existing?.sha || null);
+  return entry;
 }
 
 async function handlePublish(request, env) {
@@ -209,10 +250,18 @@ async function handlePublish(request, env) {
     const postToBluesky = form.get("postToBluesky") === "on";
     const postToMastodon = form.get("postToMastodon") === "on";
     const includeLink = form.get("includePermalink") === "on";
+    const deferCrosspost = form.get("deferCrosspost") === "on";
     const attachPhotoToSocial = form.get("attachPhotoToSocial") === "on";
     const photoFile = form.get("photoFile");
+    const reservedPhotoId = response.photo?.id || "";
+    const shouldDefer =
+      Boolean(deferCrosspost) &&
+      Boolean(reservedPhotoId) &&
+      publishPhotoStream &&
+      (postToBluesky || postToMastodon);
+
     const photoAttachment =
-      attachPhotoToSocial && photoFile && typeof photoFile.arrayBuffer === "function" && photoFile.size > 0
+      !shouldDefer && attachPhotoToSocial && photoFile && typeof photoFile.arrayBuffer === "function" && photoFile.size > 0
         ? {
             name: photoFile.name || "photo.jpg",
             mime: photoFile.type || "image/jpeg",
@@ -223,8 +272,8 @@ async function handlePublish(request, env) {
 
     const micro = await publishMicroblogPost(
       microText,
-      postToBluesky,
-      postToMastodon,
+      shouldDefer ? false : postToBluesky,
+      shouldDefer ? false : postToMastodon,
       includeLink,
       photoAttachment,
       github,
@@ -235,9 +284,182 @@ async function handlePublish(request, env) {
     if (micro.crosspostErrors && Object.keys(micro.crosspostErrors).length) {
       response.crosspostErrors = micro.crosspostErrors;
     }
+
+    if (shouldDefer) {
+      await enqueueDeferredCrosspost(
+        {
+          microblogId: micro.post.id,
+          photoId: reservedPhotoId,
+          text: microText,
+          includePermalink: includeLink,
+          providers: { bluesky: postToBluesky, mastodon: postToMastodon },
+          attachPhotoToSocial
+        },
+        github,
+        env
+      );
+      const deferred = [];
+      if (postToBluesky) deferred.push("Bluesky");
+      if (postToMastodon) deferred.push("Mastodon");
+      response.crosspost = deferred.length ? deferred.map((p) => `Deferred: ${p}`) : [];
+    }
   }
 
   return response;
+}
+
+async function handleActionCrosspost(request, env) {
+  requireEnv(env, ["GITHUB_OWNER", "GITHUB_REPO", "GITHUB_TOKEN", "ACTION_SHARED_SECRET"]);
+  const github = createGithubClient(env);
+
+  const body = await request.json().catch(() => ({}));
+  const photoIds = Array.isArray(body.photoIds) ? body.photoIds.map((x) => String(x || "").trim()).filter(Boolean) : [];
+
+  const pendingFile = await github.readTextWithSha(PENDING_CROSSPOSTS_PATH);
+  const pending = pendingFile?.text ? safeJsonParse(pendingFile.text, []) : [];
+  if (!Array.isArray(pending) || pending.length === 0) {
+    return { ok: true, processed: 0, remaining: 0, message: "No pending jobs" };
+  }
+
+  const photos = await readJsonFile(github, "data/photos.json", []);
+  const microblog = await readJsonFile(github, MICROBLOG_DATA_PATH, []);
+  const siteBase = String(env.SITE_BASE_URL || "").replace(/\/$/, "");
+
+  let processed = 0;
+  const updated = [];
+  const results = [];
+  let microblogTouched = false;
+
+  for (const job of pending) {
+    const jobPhotoId = String(job?.photoId || "").trim();
+    const match = !photoIds.length || (jobPhotoId && photoIds.includes(jobPhotoId));
+    if (!match) {
+      updated.push(job);
+      continue;
+    }
+    if (!jobPhotoId) {
+      updated.push(job);
+      continue;
+    }
+
+    const providers = job.providers || {};
+    const done = job.done || { bluesky: false, mastodon: false };
+    const wantsBluesky = Boolean(providers.bluesky) && !done.bluesky;
+    const wantsMastodon = Boolean(providers.mastodon) && !done.mastodon;
+    if (!wantsBluesky && !wantsMastodon) {
+      // Job already complete.
+      processed += 1;
+      continue;
+    }
+
+    const entry = Array.isArray(microblog) ? microblog.find((p) => p && p.id === job.microblogId) : null;
+    const permalink = entry?.permalink || "";
+    let text = String(job.text || "").trim();
+    if (job.includePermalink && permalink && !text.includes(permalink)) {
+      text = `${text}\n\n${permalink}`.trim();
+    }
+
+    let photoAttachment = null;
+    if (job.attachPhotoToSocial) {
+      const photo = Array.isArray(photos) ? photos.find((p) => p && p.id === jobPhotoId) : null;
+      const src = String(photo?.src || "").trim();
+      if (src) {
+        const url = `${siteBase}/${src}`.replace(/([^:]\/)\/+/g, "$1");
+        const mime = guessImageMime(url);
+        if (mime === "image/heic" || mime === "image/heif") {
+          // Can't reliably send HEIC/HEIF to social APIs from a Worker (no conversion).
+          photoAttachment = null;
+        } else {
+          try {
+            const bytes = await fetchBinary(url, 12_000_000);
+            photoAttachment = {
+              name: src.split("/").pop() || "photo.jpg",
+              mime,
+              bytes,
+              alt: String(photo?.alt || photo?.caption || "Photo")
+            };
+          } catch (error) {
+            // Keep going text-only if fetch fails.
+            photoAttachment = null;
+          }
+        }
+      }
+    }
+
+    const errors = {};
+    const successes = {};
+
+    if (wantsBluesky && env.BLUESKY_HANDLE && env.BLUESKY_APP_PASSWORD) {
+      try {
+        const urls = extractUrls(text);
+        const cardUrl = urls[0] || "";
+        const blueskyUrl = await postToBlueskyApi(text, "", cardUrl, photoAttachment, env);
+        if (blueskyUrl) {
+          done.bluesky = true;
+          successes.blueskyUrl = blueskyUrl;
+        } else {
+          errors.Bluesky = "Unknown failure";
+        }
+      } catch (error) {
+        errors.Bluesky = error.message || "Failed";
+      }
+    } else if (wantsBluesky) {
+      errors.Bluesky = "Missing BLUESKY_HANDLE or BLUESKY_APP_PASSWORD";
+    }
+
+    if (wantsMastodon && env.MASTODON_BASE_URL && env.MASTODON_ACCESS_TOKEN) {
+      try {
+        const mastodonUrl = await postToMastodonApi(text, "", photoAttachment, env);
+        if (mastodonUrl) {
+          done.mastodon = true;
+          successes.mastodonUrl = mastodonUrl;
+        } else {
+          errors.Mastodon = "Unknown failure";
+        }
+      } catch (error) {
+        errors.Mastodon = error.message || "Failed";
+      }
+    } else if (wantsMastodon) {
+      errors.Mastodon = "Missing MASTODON_BASE_URL or MASTODON_ACCESS_TOKEN";
+    }
+
+    // Persist crosspost URLs back into microblog.json when possible.
+    if (entry && Array.isArray(microblog)) {
+      if (successes.blueskyUrl) entry.blueskyUrl = successes.blueskyUrl;
+      if (successes.mastodonUrl) entry.mastodonUrl = successes.mastodonUrl;
+      if (successes.blueskyUrl || successes.mastodonUrl) microblogTouched = true;
+    }
+
+    processed += 1;
+    results.push({ jobId: job.id, photoId: jobPhotoId, done: { ...done }, errors });
+
+    const allDone = (!providers.bluesky || done.bluesky) && (!providers.mastodon || done.mastodon);
+    if (!allDone) {
+      updated.push({
+        ...job,
+        done,
+        attempts: Number(job.attempts || 0) + 1,
+        lastErrors: errors,
+        lastTriedAt: new Date().toISOString()
+      });
+    }
+  }
+
+  // Write updates.
+  await github.putFileText(
+    PENDING_CROSSPOSTS_PATH,
+    `${JSON.stringify(updated, null, 2)}\n`,
+    `Process deferred crossposts (${processed})`,
+    pendingFile?.sha || null
+  );
+
+  // If we modified microblog feed entries, write it back.
+  if (microblogTouched && Array.isArray(microblog)) {
+    const existing = await github.readTextWithSha(MICROBLOG_DATA_PATH);
+    await github.putFileText(MICROBLOG_DATA_PATH, `${JSON.stringify(microblog, null, 2)}\n`, `Update microblog crosspost URLs`, existing?.sha || null);
+  }
+
+  return { ok: true, processed, remaining: updated.length, results };
 }
 
 async function queuePhotoUpload(file, form, github) {
@@ -588,6 +810,8 @@ function guessImageMime(url) {
   if (lower.endsWith(".png")) return "image/png";
   if (lower.endsWith(".webp")) return "image/webp";
   if (lower.endsWith(".gif")) return "image/gif";
+  if (lower.endsWith(".heic")) return "image/heic";
+  if (lower.endsWith(".heif")) return "image/heif";
   return "image/jpeg";
 }
 
@@ -654,6 +878,16 @@ async function assertAuthorized(request, env) {
   }
   if (payload?.exp && Date.now() / 1000 > payload.exp) {
     throw httpError(401, "Expired token");
+  }
+}
+
+async function assertActionAuthorized(request, env) {
+  // This endpoint is meant for GitHub Actions. Keep it simple: shared secret only.
+  const expected = String(env.ACTION_SHARED_SECRET || "").trim();
+  if (!expected) throw httpError(500, "Missing ACTION_SHARED_SECRET");
+  const provided = String(request.headers.get("x-action-secret") || "").trim();
+  if (!provided || provided !== expected) {
+    throw httpError(401, "Unauthorized");
   }
 }
 
@@ -826,6 +1060,14 @@ function jsonResponse(payload, status, request, env) {
 
 function todayIsoDate() {
   return new Date().toISOString().slice(0, 10);
+}
+
+function safeJsonParse(text, fallback) {
+  try {
+    return JSON.parse(String(text || ""));
+  } catch {
+    return fallback;
+  }
 }
 
 function extensionFromFilename(name) {

@@ -119,6 +119,7 @@ if (imageFiles.length === 0) {
 }
 
 const newEntries = [];
+const processedIds = [];
 
 for (const imageName of imageFiles) {
   const ext = path.extname(imageName).toLowerCase();
@@ -163,10 +164,19 @@ for (const imageName of imageFiles) {
   };
 
   newEntries.push(entry);
+  processedIds.push(id);
   console.log(`Processed ${imageName} -> images/${destinationName}`);
 }
 
 const merged = [...newEntries, ...photos];
 fs.writeFileSync(photosJsonPath, `${JSON.stringify(merged, null, 2)}\n`, "utf8");
+
+// Used by CI to trigger deferred social cross-posts after the photo stream is updated.
+const lastProcessedPath = path.join(repoRoot, "data", "last-processed-photos.json");
+fs.writeFileSync(
+  lastProcessedPath,
+  `${JSON.stringify({ processedAt: new Date().toISOString(), ids: processedIds }, null, 2)}\n`,
+  "utf8"
+);
 
 console.log(`Added ${newEntries.length} photo post(s) to data/photos.json.`);

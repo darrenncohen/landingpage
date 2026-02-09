@@ -11,6 +11,7 @@ MASTODON_VISIBILITY = "unlisted"
 # Required secrets (set with `wrangler secret put ...`):
 # ACCESS_ALLOWED_EMAIL
 # ACCESS_AUD
+# ACTION_SHARED_SECRET
 # GITHUB_OWNER
 # GITHUB_REPO
 # GITHUB_TOKEN
