@@ -32,11 +32,11 @@
 
   function postTemplate(photo) {
     var id = escapeHtml(photo.id || "");
-    var preferredSrc = escapeHtml(getPrimaryImageUrl(photo));
+    var src = escapeHtml(photo.src || "");
     var alt = escapeHtml(photo.alt || photo.caption || "Photo");
     var caption = escapeHtml(photo.caption || "");
     var meta = escapeHtml(postMeta(photo));
-    var imageMarkup = buildImageMarkup(photo, preferredSrc, alt);
+    var imageMarkup = buildImageMarkup(photo, src, alt);
 
     return (
       '<article class="photo-post" id="' +
@@ -57,7 +57,7 @@
       '" aria-label="Link to photo post">#</a>' +
       "</div>" +
       '<a class="photo-post-image-link" href="' +
-      preferredSrc +
+      src +
       '" target="_blank" rel="noopener">' +
       imageMarkup +
       "</a>" +
@@ -73,21 +73,7 @@
     );
   }
 
-  function getPrimaryImageUrl(photo) {
-    var cf = photo.cloudflare || {};
-    if (cf.imageId && cf.deliveryHash) {
-      var variant = cf.variant || "public";
-      return "https://imagedelivery.net/" + cf.deliveryHash + "/" + cf.imageId + "/" + variant;
-    }
-    return photo.src || "";
-  }
-
-  function buildImageMarkup(photo, preferredSrc, alt) {
-    var cf = photo.cloudflare || {};
-    var hasCloudflare = Boolean(cf.imageId && cf.deliveryHash);
-    if (hasCloudflare) {
-      return '<img class="photo-post-image" src="' + preferredSrc + '" alt="' + alt + '" loading="lazy">';
-    }
+  function buildImageMarkup(photo, fallbackSrc, alt) {
 
     var optimized = photo.optimized || {};
     var base = typeof optimized.base === "string" ? optimized.base : "";
@@ -96,7 +82,7 @@
     var hasResponsive = base && widths.length > 0 && formats.length > 0;
 
     if (!hasResponsive) {
-      return '<img class="photo-post-image" src="' + preferredSrc + '" alt="' + alt + '" loading="lazy">';
+      return '<img class="photo-post-image" src="' + fallbackSrc + '" alt="' + alt + '" loading="lazy">';
     }
 
     var sizes = '(max-width: 760px) 100vw, 720px';
@@ -124,7 +110,7 @@
       "<picture>" +
       sources +
       '<img class="photo-post-image" src="' +
-      preferredSrc +
+      fallbackSrc +
       '" alt="' +
       alt +
       '" loading="lazy" sizes="' +

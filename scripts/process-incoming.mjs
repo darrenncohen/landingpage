@@ -9,11 +9,6 @@ const incomingDir = path.join(repoRoot, "incoming");
 const imagesDir = path.join(repoRoot, "images");
 const photosJsonPath = path.join(repoRoot, "data", "photos.json");
 const supportedExt = new Set([".jpg", ".jpeg", ".png", ".webp", ".gif", ".heic", ".heif"]);
-const cfAccountId = process.env.CF_IMAGES_ACCOUNT_ID || "";
-const cfApiToken = process.env.CF_IMAGES_API_TOKEN || "";
-const cfDeliveryHash = process.env.CF_IMAGES_DELIVERY_HASH || "";
-const cfVariant = process.env.CF_IMAGES_VARIANT || "public";
-const cloudflareEnabled = Boolean(cfAccountId && cfApiToken && cfDeliveryHash);
 
 function slugify(value) {
   return String(value || "")
@@ -36,62 +31,6 @@ function isValidDate(value) {
 
 function todayIso() {
   return new Date().toISOString().slice(0, 10);
-}
-
-function mimeTypeForExt(ext) {
-  switch (ext) {
-    case ".jpg":
-    case ".jpeg":
-      return "image/jpeg";
-    case ".png":
-      return "image/png";
-    case ".webp":
-      return "image/webp";
-    case ".gif":
-      return "image/gif";
-    case ".heic":
-      return "image/heic";
-    case ".heif":
-      return "image/heif";
-    default:
-      return "application/octet-stream";
-  }
-}
-
-async function uploadToCloudflareImages({ filePath, fileName, ext, metadata }) {
-  if (!cloudflareEnabled) {
-    return null;
-  }
-
-  const fileBuffer = fs.readFileSync(filePath);
-  const form = new FormData();
-  const blob = new Blob([fileBuffer], { type: mimeTypeForExt(ext) });
-  form.append("file", blob, fileName);
-  form.append("metadata", JSON.stringify(metadata));
-  form.append("requireSignedURLs", "false");
-
-  const response = await fetch(`https://api.cloudflare.com/client/v4/accounts/${cfAccountId}/images/v1`, {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${cfApiToken}`
-    },
-    body: form
-  });
-  const payload = await response.json().catch(() => null);
-
-  if (!response.ok || !payload?.success || !payload?.result?.id) {
-    throw new Error(
-      `Cloudflare upload failed (${response.status}): ${
-        payload?.errors?.map((e) => e.message).join(", ") || "unknown error"
-      }`
-    );
-  }
-
-  return {
-    imageId: payload.result.id,
-    deliveryHash: cfDeliveryHash,
-    variant: cfVariant
-  };
 }
 
 function readSidecar(sidecarPath) {
@@ -210,20 +149,6 @@ for (const imageName of imageFiles) {
   const destinationPath = path.join(imagesDir, destinationName);
   fs.renameSync(sourcePath, destinationPath);
 
-  let cloudflare = null;
-  if (cloudflareEnabled) {
-    try {
-      cloudflare = await uploadToCloudflareImages({
-        filePath: destinationPath,
-        fileName: destinationName,
-        ext,
-        metadata: { id, takenOn, location, caption }
-      });
-    } catch (error) {
-      console.warn(`Cloudflare upload skipped for ${destinationName}: ${error.message}`);
-    }
-  }
-
   if (fs.existsSync(sidecarPath)) {
     fs.rmSync(sidecarPath);
   }
@@ -236,9 +161,6 @@ for (const imageName of imageFiles) {
     location,
     takenOn
   };
-  if (cloudflare) {
-    entry.cloudflare = cloudflare;
-  }
 
   newEntries.push(entry);
   console.log(`Processed ${imageName} -> images/${destinationName}`);

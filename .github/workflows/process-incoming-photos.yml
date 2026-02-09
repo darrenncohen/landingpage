@@ -27,24 +27,10 @@ jobs:
           sudo apt-get install -y imagemagick
 
       - name: Process incoming files
-        env:
-          CF_IMAGES_ACCOUNT_ID: ${{ secrets.CF_IMAGES_ACCOUNT_ID }}
-          CF_IMAGES_API_TOKEN: ${{ secrets.CF_IMAGES_API_TOKEN }}
-          CF_IMAGES_DELIVERY_HASH: ${{ secrets.CF_IMAGES_DELIVERY_HASH }}
-          CF_IMAGES_VARIANT: ${{ secrets.CF_IMAGES_VARIANT }}
         run: node scripts/process-incoming.mjs
 
       - name: Optimize gallery images
         run: node scripts/optimize-gallery-images.mjs
-
-      - name: Backfill existing photos to Cloudflare
-        if: ${{ secrets.CF_IMAGES_ACCOUNT_ID != '' && secrets.CF_IMAGES_API_TOKEN != '' && secrets.CF_IMAGES_DELIVERY_HASH != '' }}
-        env:
-          CF_IMAGES_ACCOUNT_ID: ${{ secrets.CF_IMAGES_ACCOUNT_ID }}
-          CF_IMAGES_API_TOKEN: ${{ secrets.CF_IMAGES_API_TOKEN }}
-          CF_IMAGES_DELIVERY_HASH: ${{ secrets.CF_IMAGES_DELIVERY_HASH }}
-          CF_IMAGES_VARIANT: ${{ secrets.CF_IMAGES_VARIANT }}
-        run: node scripts/sync-photos-to-cloudflare.mjs
 
       - name: Commit and push generated updates
         run: |

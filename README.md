@@ -59,33 +59,6 @@ Optional sidecar metadata file (same basename as image):
 }
 ```
 
-## Cloudflare Images (preferred for future proofing)
-
-When these GitHub repo secrets are set, uploads are also copied to Cloudflare Images and gallery rendering will prefer Cloudflare URLs:
-
-- `CF_IMAGES_ACCOUNT_ID`
-- `CF_IMAGES_API_TOKEN`
-- `CF_IMAGES_DELIVERY_HASH`
-- `CF_IMAGES_VARIANT` (optional, defaults to `public`)
-
-### One-time setup
-
-1. In Cloudflare Images, create a variant named `public` (or set `CF_IMAGES_VARIANT` to your variant name).
-2. In GitHub repo settings, add the secrets above.
-3. Run the `Process Incoming Photos` workflow manually once (`workflow_dispatch`) to backfill existing photos to Cloudflare.
-
-### Ongoing upload flow (desktop + iOS)
-
-1. Add photo to `incoming/`.
-2. Optional: add `incoming/<same-name>.json` metadata sidecar.
-3. Commit and push.
-4. Workflow will:
-   - move image to `images/`
-   - optimize local variants
-   - upload image to Cloudflare Images
-   - update `data/photos.json`
-   - commit changes back
-
 ## Optional authenticated web upload portal
 
 Yes, this is possible.
@@ -93,8 +66,8 @@ Yes, this is possible.
 Recommended architecture:
 
 - Static site stays on GitHub Pages (or any host).
-- Add a Cloudflare Worker endpoint for uploads.
-- Protect Worker with Cloudflare Access (Google login).
-- Worker receives image + metadata, uploads to Cloudflare Images, opens a PR or commit to update `data/photos.json`.
+- Add an upload endpoint (for example Cloudflare Worker or any small backend).
+- Protect it with authentication (Google OAuth, GitHub OAuth, or Cloudflare Access).
+- Endpoint can write to your repo via API and update `data/photos.json`.
 
 This is more complex than the current workflow, so keep manual/shortcut upload first and add portal later when you want.
