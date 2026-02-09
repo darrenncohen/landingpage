@@ -36,6 +36,7 @@
     var alt = escapeHtml(photo.alt || photo.caption || "Photo");
     var caption = escapeHtml(photo.caption || "");
     var meta = escapeHtml(postMeta(photo));
+    var imageMarkup = buildImageMarkup(photo, src, alt);
 
     return (
       '<article class="photo-post" id="' +
@@ -58,11 +59,7 @@
       '<a class="photo-post-image-link" href="' +
       src +
       '" target="_blank" rel="noopener">' +
-      '<img class="photo-post-image" src="' +
-      src +
-      '" alt="' +
-      alt +
-      '" loading="lazy">' +
+      imageMarkup +
       "</a>" +
       '<div class="photo-post-actions">' +
       '<button class="photo-icon-button js-share-photo" type="button" data-photo-id="' +
@@ -73,6 +70,52 @@
       caption +
       "</p>" +
       "</article>"
+    );
+  }
+
+  function buildImageMarkup(photo, fallbackSrc, alt) {
+    var optimized = photo.optimized || {};
+    var base = typeof optimized.base === "string" ? optimized.base : "";
+    var widths = Array.isArray(optimized.widths) ? optimized.widths : [];
+    var formats = Array.isArray(optimized.formats) ? optimized.formats : [];
+    var hasResponsive = base && widths.length > 0 && formats.length > 0;
+
+    if (!hasResponsive) {
+      return '<img class="photo-post-image" src="' + fallbackSrc + '" alt="' + alt + '" loading="lazy">';
+    }
+
+    var sizes = '(max-width: 760px) 100vw, 720px';
+    var preferredFormats = ["avif", "webp"];
+    var orderedFormats = preferredFormats.filter(function (fmt) {
+      return formats.indexOf(fmt) !== -1;
+    });
+    var otherFormats = formats.filter(function (fmt) {
+      return preferredFormats.indexOf(fmt) === -1;
+    });
+
+    var sources = orderedFormats
+      .concat(otherFormats)
+      .map(function (format) {
+        var srcset = widths
+          .map(function (w) {
+            return escapeHtml(base + "-" + w + "." + format) + " " + w + "w";
+          })
+          .join(", ");
+        return '<source type="image/' + escapeHtml(format) + '" srcset="' + srcset + '" sizes="' + sizes + '">';
+      })
+      .join("");
+
+    return (
+      "<picture>" +
+      sources +
+      '<img class="photo-post-image" src="' +
+      fallbackSrc +
+      '" alt="' +
+      alt +
+      '" loading="lazy" sizes="' +
+      sizes +
+      '">' +
+      "</picture>"
     );
   }
 

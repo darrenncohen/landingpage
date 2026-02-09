@@ -5,7 +5,19 @@
     "alt": "a cortado and a book on a cold day",
     "caption": "a cortado and a book on a cold day",
     "location": "Financial District, NYC",
-    "takenOn": "2026-01-18"
+    "takenOn": "2026-01-18",
+    "optimized": {
+      "base": "images/optimized/cold-day-cortado-nyc",
+      "widths": [
+        640,
+        1080,
+        1600
+      ],
+      "formats": [
+        "webp",
+        "avif"
+      ]
+    }
   },
   {
     "id": "bike-bridge-2025-12",
@@ -13,7 +25,19 @@
     "alt": "Riding over the Williamsburg Bridge on bike",
     "caption": "Summer ride across the Williamsburg Bridge.",
     "location": "Williamsburg Bridge, NYC",
-    "takenOn": "2025-12-01"
+    "takenOn": "2025-12-01",
+    "optimized": {
+      "base": "images/optimized/bike-bridge-2025-12",
+      "widths": [
+        640,
+        1080,
+        1600
+      ],
+      "formats": [
+        "webp",
+        "avif"
+      ]
+    }
   },
   {
     "id": "lic-train-2025-12",
@@ -21,6 +45,18 @@
     "alt": "7 Train above ground in Long Island City",
     "caption": "The 7 line aboveground in LIC.",
     "location": "Long Island City, NYC",
-    "takenOn": "2025-12-01"
+    "takenOn": "2025-12-01",
+    "optimized": {
+      "base": "images/optimized/lic-train-2025-12",
+      "widths": [
+        640,
+        1080,
+        1600
+      ],
+      "formats": [
+        "webp",
+        "avif"
+      ]
+    }
   }
 ]

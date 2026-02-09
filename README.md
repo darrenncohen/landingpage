@@ -30,6 +30,7 @@ Drop photos in `incoming/`, commit, and push. GitHub Actions will:
 
 - move files to `images/`
 - update `data/photos.json`
+- generate optimized `AVIF` and `WebP` variants in `images/optimized/`
 - commit back to the repo automatically
 
 Filename metadata format:
