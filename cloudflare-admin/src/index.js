@@ -74,13 +74,23 @@ function adminHtml(env) {
     .muted{opacity:.8}
     hr{border:none;border-top:1px solid rgba(128,128,128,.25);margin:18px 0}
   </style>
-  <script>
-    async function publish(e){
-      e.preventDefault();
-      const form = e.target;
-      const status = document.getElementById('status');
-      status.className = 'status muted';
-      status.textContent = 'Publishing...';
+	  <script>
+	    function setDefaults(){
+	      // Defeat browser restore/autofill so "photo stream" stays off by default.
+	      const photoStream = document.querySelector('input[name="publishPhotoStream"]');
+	      const attachPhoto = document.querySelector('input[name="attachPhotoToSocial"]');
+	      if(photoStream) photoStream.checked = false;
+	      if(attachPhoto) attachPhoto.checked = false;
+	    }
+	    window.addEventListener('pageshow', setDefaults);
+
+	    async function publish(e){
+	      e.preventDefault();
+	      const form = e.target;
+	      setDefaults();
+	      const status = document.getElementById('status');
+	      status.className = 'status muted';
+	      status.textContent = 'Publishing...';
       try{
         const fd = new FormData(form);
         const resp = await fetch('/api/publish',{method:'POST',body:fd,credentials:'include'});
@@ -110,7 +120,7 @@ function adminHtml(env) {
   <h1>${escapeHtml(title)}</h1>
   <p>Private publishing form. Site: ${escapeHtml(site || "(not set)")}</p>
 
-  <form onsubmit="publish(event)">
+	  <form onsubmit="publish(event)" autocomplete="off">
     <label for="microText">Microblog text</label>
     <textarea id="microText" name="microText" placeholder="Optional if uploading only a photo"></textarea>
 
