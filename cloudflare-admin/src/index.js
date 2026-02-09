@@ -208,7 +208,9 @@ async function queuePhotoUpload(file, form, github) {
 }
 
 async function publishMicroblogPost(text, postToBluesky, postToMastodon, github, env) {
-  const feed = await readJsonFile(github, MICROBLOG_DATA_PATH, []);
+  const existing = await github.readTextWithSha(MICROBLOG_DATA_PATH);
+  const feed = existing?.text ? JSON.parse(existing.text) : [];
+  const existingSha = existing?.sha || null;
   const id = `post-${new Date().toISOString().replace(/[-:.TZ]/g, "").slice(0, 14)}`;
   const createdAt = new Date().toISOString();
   const postUrl = `${(env.SITE_BASE_URL || "").replace(/\/$/, "")}/microblog.html#${id}`;
@@ -218,9 +220,6 @@ async function publishMicroblogPost(text, postToBluesky, postToMastodon, github,
     text,
     createdAt
   };
-
-  feed.unshift(entry);
-  await github.putFileText(MICROBLOG_DATA_PATH, `${JSON.stringify(feed, null, 2)}\n`, `Publish microblog post: ${id}`);
 
   const crosspost = [];
 
@@ -240,10 +239,9 @@ async function publishMicroblogPost(text, postToBluesky, postToMastodon, github,
     }
   }
 
-  if (entry.blueskyUrl || entry.mastodonUrl) {
-    feed[0] = entry;
-    await github.putFileText(MICROBLOG_DATA_PATH, `${JSON.stringify(feed, null, 2)}\n`, `Attach social links: ${id}`);
-  }
+  // Always publish to the site, even if cross-posting fails.
+  feed.unshift(entry);
+  await github.putFileText(MICROBLOG_DATA_PATH, `${JSON.stringify(feed, null, 2)}\n`, `Publish microblog post: ${id}`, existingSha);
 
   return { post: entry, crosspost };
 }
@@ -349,14 +347,39 @@ function createGithubClient(env) {
   const branch = env.GITHUB_BRANCH || "main";
   const baseUrl = `https://api.github.com/repos/${owner}/${repo}/contents/`;
   const userAgent = env.GITHUB_USER_AGENT || "landingpage-admin-worker";
+  const apiVersion = env.GITHUB_API_VERSION || "2022-11-28";
+
+  async function sleep(ms) {
+    await new Promise((resolve) => setTimeout(resolve, ms));
+  }
+
+  async function githubFetch(url, init, attempt = 1) {
+    const response = await fetch(url, init);
+    if (response.ok || response.status === 404) {
+      return response;
+    }
+
+    // Retry on transient errors / secondary rate limits.
+    const retryable = response.status === 429 || response.status === 502 || response.status === 503 || response.status === 504;
+    if (!retryable || attempt >= 5) {
+      return response;
+    }
+
+    const retryAfter = Number(response.headers.get("retry-after") || "0");
+    const baseDelayMs = retryAfter > 0 ? retryAfter * 1000 : 800 * Math.pow(2, attempt - 1);
+    const jitterMs = Math.floor(Math.random() * 250);
+    await sleep(baseDelayMs + jitterMs);
+    return githubFetch(url, init, attempt + 1);
+  }
 
   async function getFile(filePath) {
     const encodedPath = encodePath(filePath);
-    const response = await fetch(`${baseUrl}${encodedPath}?ref=${encodeURIComponent(branch)}`, {
+    const response = await githubFetch(`${baseUrl}${encodedPath}?ref=${encodeURIComponent(branch)}`, {
       headers: {
         authorization: `Bearer ${token}`,
         accept: "application/vnd.github+json",
-        "user-agent": userAgent
+        "user-agent": userAgent,
+        "x-github-api-version": apiVersion
       }
     });
     if (response.status === 404) return null;
@@ -367,27 +390,46 @@ function createGithubClient(env) {
     return response.json();
   }
 
-  async function putFile(filePath, contentBase64, message) {
+  async function putFile(filePath, contentBase64, message, sha) {
     const encodedPath = encodePath(filePath);
-    const existing = await getFile(filePath);
     const body = {
       message,
       content: contentBase64,
       branch
     };
-    if (existing?.sha) {
-      body.sha = existing.sha;
-    }
-    const response = await fetch(`${baseUrl}${encodedPath}`, {
+    if (sha) body.sha = sha;
+
+    let response = await githubFetch(`${baseUrl}${encodedPath}`, {
       method: "PUT",
       headers: {
         authorization: `Bearer ${token}`,
         accept: "application/vnd.github+json",
         "content-type": "application/json",
-        "user-agent": userAgent
+        "user-agent": userAgent,
+        "x-github-api-version": apiVersion
       },
       body: JSON.stringify(body)
     });
+
+    // If we attempted a create but the file exists, fetch sha and retry once as update.
+    if (response.status === 422 && !sha) {
+      const existing = await getFile(filePath);
+      if (existing?.sha) {
+        body.sha = existing.sha;
+        response = await githubFetch(`${baseUrl}${encodedPath}`, {
+          method: "PUT",
+          headers: {
+            authorization: `Bearer ${token}`,
+            accept: "application/vnd.github+json",
+            "content-type": "application/json",
+            "user-agent": userAgent,
+            "x-github-api-version": apiVersion
+          },
+          body: JSON.stringify(body)
+        });
+      }
+    }
+
     if (!response.ok) {
       const err = await response.text().catch(() => "");
       throw httpError(500, `GitHub write failed (${response.status}) for ${filePath}: ${err.slice(0, 500)}`);
@@ -396,17 +438,24 @@ function createGithubClient(env) {
   }
 
   return {
+    async readTextWithSha(filePath) {
+      const file = await getFile(filePath);
+      if (!file) return null;
+      const normalized = String(file.content || "").replace(/\n/g, "");
+      return { text: decodeBase64Utf8(normalized), sha: file.sha };
+    },
     async readText(filePath) {
       const file = await getFile(filePath);
       if (!file) return null;
       const normalized = String(file.content || "").replace(/\n/g, "");
       return decodeBase64Utf8(normalized);
     },
-    async putFileText(filePath, text, message) {
-      return putFile(filePath, encodeUtf8Base64(text), message);
+    async putFileText(filePath, text, message, sha) {
+      return putFile(filePath, encodeUtf8Base64(text), message, sha);
     },
     async putFileBinary(filePath, buffer, message) {
-      return putFile(filePath, arrayBufferToBase64(buffer), message);
+      // Usually new files (incoming/*). Avoid read-before-write; GitHub create doesn't need sha.
+      return putFile(filePath, arrayBufferToBase64(buffer), message, null);
     }
   };
 }
