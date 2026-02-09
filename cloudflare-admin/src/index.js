@@ -285,7 +285,8 @@ async function postToBlueskyApi(text, postUrl, env) {
   });
   const session = await sessionRes.json().catch(() => null);
   if (!sessionRes.ok || !session?.accessJwt || !session?.did) {
-    return "";
+    const detail = JSON.stringify(session || {});
+    throw new Error(`Bluesky login failed (${sessionRes.status}): ${detail.slice(0, 220)}`);
   }
 
   const message = postUrl ? `${text}\n\n${postUrl}`.trim() : text;
