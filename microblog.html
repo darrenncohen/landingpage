@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Microblog | Darren Cohen</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <script>
+    (function () {
+      try {
+        var storedTheme = localStorage.getItem("theme-preference");
+        var systemTheme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+        var theme = (storedTheme === "dark" || storedTheme === "light") ? storedTheme : systemTheme;
+        document.documentElement.setAttribute("data-theme", theme);
+        document.documentElement.style.colorScheme = theme;
+      } catch (e) {}
+    })();
+  </script>
+  <script src="js/theme.js" defer></script>
+  <script src="js/microblog.js" defer></script>
+</head>
+<body>
+  <div class="links-header">
+    <h1>Microblog</h1>
+    <p>Short notes and links.</p>
+    <a href="index.html" class="back-button">Back to Home</a>
+  </div>
+
+  <div class="content-container">
+    <div class="content-card" id="microblog-feed">
+      <p class="loading-message">Loading posts...</p>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    Hosted on <a href="https://github.com" target="_blank" rel="noopener">GitHub</a>.
+  </footer>
+</body>
+</html>

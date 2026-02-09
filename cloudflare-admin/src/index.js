@@ -1,0 +1,379 @@
+const MICROBLOG_DATA_PATH = "data/microblog.json";
+
+export default {
+  async fetch(request, env) {
+    const url = new URL(request.url);
+    if (request.method === "OPTIONS") {
+      return new Response(null, { headers: corsHeaders(request, env) });
+    }
+    if (url.pathname === "/health") {
+      return jsonResponse({ ok: true }, 200, request, env);
+    }
+    if (url.pathname === "/api/publish" && request.method === "POST") {
+      try {
+        await assertAuthorized(request, env);
+        const result = await handlePublish(request, env);
+        return jsonResponse(result, 200, request, env);
+      } catch (error) {
+        const status = error.status || 500;
+        return jsonResponse({ error: error.message || "Request failed" }, status, request, env);
+      }
+    }
+    return jsonResponse({ error: "Not found" }, 404, request, env);
+  }
+};
+
+async function handlePublish(request, env) {
+  requireEnv(env, ["GITHUB_OWNER", "GITHUB_REPO", "GITHUB_TOKEN", "ACCESS_ALLOWED_EMAIL", "ACCESS_AUD"]);
+
+  const github = createGithubClient(env);
+  const form = await request.formData();
+  const publishMicroblog = form.get("publishMicroblog") === "on";
+  const publishPhotoStream = form.get("publishPhotoStream") === "on";
+
+  if (!publishMicroblog && !publishPhotoStream) {
+    throw httpError(400, "Pick at least one destination");
+  }
+
+  const response = { ok: true };
+
+  if (publishPhotoStream) {
+    const photoFile = form.get("photoFile");
+    if (photoFile && typeof photoFile.arrayBuffer === "function" && photoFile.size > 0) {
+      response.photo = await queuePhotoUpload(photoFile, form, github);
+    } else if (!publishMicroblog) {
+      throw httpError(400, "Photo file is required for photo stream publish");
+    }
+  }
+
+  if (publishMicroblog) {
+    const microText = String(form.get("microText") || "").trim();
+    if (!microText) {
+      throw httpError(400, "Microblog text is required");
+    }
+    const postToBluesky = form.get("postToBluesky") === "on";
+    const postToMastodon = form.get("postToMastodon") === "on";
+    const micro = await publishMicroblogPost(microText, postToBluesky, postToMastodon, github, env);
+    response.microblog = micro.post;
+    response.crosspost = micro.crosspost;
+  }
+
+  return response;
+}
+
+async function queuePhotoUpload(file, form, github) {
+  const inputDate = String(form.get("photoDate") || "").trim();
+  const takenOn = /^\d{4}-\d{2}-\d{2}$/.test(inputDate) ? inputDate : todayIsoDate();
+  const caption = String(form.get("photoCaption") || "").trim();
+  const location = String(form.get("photoLocation") || "").trim();
+  const slugSource = caption || file.name || `photo-${Date.now()}`;
+  const slug = slugify(slugSource);
+  const ext = extensionFromFilename(file.name || "upload.jpg");
+
+  const captionPart = slugify(caption || slugSource);
+  const locationPart = slugify(location);
+  let incomingName = `${takenOn}__${slug}__${captionPart}.${ext}`;
+  if (locationPart) {
+    incomingName = `${takenOn}__${slug}__${locationPart}__${captionPart}.${ext}`;
+  }
+  const incomingPath = `incoming/${incomingName}`;
+  const buffer = await file.arrayBuffer();
+  await github.putFileBinary(incomingPath, buffer, `Queue photo upload: ${slug}`);
+
+  return { incomingPath, takenOn };
+}
+
+async function publishMicroblogPost(text, postToBluesky, postToMastodon, github, env) {
+  const feed = await readJsonFile(github, MICROBLOG_DATA_PATH, []);
+  const id = `post-${new Date().toISOString().replace(/[-:.TZ]/g, "").slice(0, 14)}`;
+  const createdAt = new Date().toISOString();
+  const postUrl = `${(env.SITE_BASE_URL || "").replace(/\/$/, "")}/microblog.html#${id}`;
+
+  const entry = {
+    id,
+    text,
+    createdAt
+  };
+
+  feed.unshift(entry);
+  await github.putFileText(MICROBLOG_DATA_PATH, `${JSON.stringify(feed, null, 2)}\n`, `Publish microblog post: ${id}`);
+
+  const crosspost = [];
+
+  if (postToBluesky && env.BLUESKY_HANDLE && env.BLUESKY_APP_PASSWORD) {
+    const blueskyUrl = await postToBlueskyApi(text, postUrl, env);
+    if (blueskyUrl) {
+      entry.blueskyUrl = blueskyUrl;
+      crosspost.push("Bluesky");
+    }
+  }
+
+  if (postToMastodon && env.MASTODON_BASE_URL && env.MASTODON_ACCESS_TOKEN) {
+    const mastodonUrl = await postToMastodonApi(text, postUrl, env);
+    if (mastodonUrl) {
+      entry.mastodonUrl = mastodonUrl;
+      crosspost.push("Mastodon");
+    }
+  }
+
+  if (entry.blueskyUrl || entry.mastodonUrl) {
+    feed[0] = entry;
+    await github.putFileText(MICROBLOG_DATA_PATH, `${JSON.stringify(feed, null, 2)}\n`, `Attach social links: ${id}`);
+  }
+
+  return { post: entry, crosspost };
+}
+
+async function postToBlueskyApi(text, postUrl, env) {
+  const sessionRes = await fetch("https://bsky.social/xrpc/com.atproto.server.createSession", {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({
+      identifier: env.BLUESKY_HANDLE,
+      password: env.BLUESKY_APP_PASSWORD
+    })
+  });
+  const session = await sessionRes.json().catch(() => null);
+  if (!sessionRes.ok || !session?.accessJwt || !session?.did) {
+    return "";
+  }
+
+  const message = `${text}\n\n${postUrl}`.trim();
+  const recordRes = await fetch("https://bsky.social/xrpc/com.atproto.repo.createRecord", {
+    method: "POST",
+    headers: {
+      "content-type": "application/json",
+      authorization: `Bearer ${session.accessJwt}`
+    },
+    body: JSON.stringify({
+      repo: session.did,
+      collection: "app.bsky.feed.post",
+      record: {
+        $type: "app.bsky.feed.post",
+        text: message,
+        createdAt: new Date().toISOString()
+      }
+    })
+  });
+  const record = await recordRes.json().catch(() => null);
+  if (!recordRes.ok || !record?.uri) return "";
+
+  const uriParts = String(record.uri).split("/");
+  const postRkey = uriParts[uriParts.length - 1];
+  return `https://bsky.app/profile/${env.BLUESKY_HANDLE}/post/${postRkey}`;
+}
+
+async function postToMastodonApi(text, postUrl, env) {
+  const base = String(env.MASTODON_BASE_URL || "").replace(/\/$/, "");
+  if (!base) return "";
+  const body = new URLSearchParams();
+  body.set("status", `${text}\n\n${postUrl}`.trim());
+  body.set("visibility", env.MASTODON_VISIBILITY || "unlisted");
+
+  const res = await fetch(`${base}/api/v1/statuses`, {
+    method: "POST",
+    headers: {
+      authorization: `Bearer ${env.MASTODON_ACCESS_TOKEN}`,
+      "content-type": "application/x-www-form-urlencoded"
+    },
+    body: body.toString()
+  });
+  const payload = await res.json().catch(() => null);
+  if (!res.ok || !payload?.url) return "";
+  return payload.url;
+}
+
+async function assertAuthorized(request, env) {
+  const email = request.headers.get("cf-access-authenticated-user-email");
+  if (!email || email.toLowerCase() !== String(env.ACCESS_ALLOWED_EMAIL || "").toLowerCase()) {
+    throw httpError(401, "Unauthorized");
+  }
+  const jwt = request.headers.get("cf-access-jwt-assertion");
+  if (!jwt) {
+    throw httpError(401, "Missing access assertion");
+  }
+  const payload = decodeJwtPayload(jwt);
+  const aud = payload?.aud;
+  if (!Array.isArray(aud) || aud.indexOf(env.ACCESS_AUD) === -1) {
+    throw httpError(401, "Invalid audience");
+  }
+  if (payload?.email && payload.email.toLowerCase() !== email.toLowerCase()) {
+    throw httpError(401, "Email mismatch");
+  }
+  if (payload?.exp && Date.now() / 1000 > payload.exp) {
+    throw httpError(401, "Expired token");
+  }
+}
+
+function decodeJwtPayload(jwt) {
+  try {
+    const parts = String(jwt || "").split(".");
+    if (parts.length < 2) throw new Error("Malformed token");
+    const base64 = parts[1].replace(/-/g, "+").replace(/_/g, "/");
+    const padded = base64 + "===".slice((base64.length + 3) % 4);
+    const decoded = atob(padded);
+    return JSON.parse(decoded);
+  } catch {
+    throw httpError(401, "Malformed access token");
+  }
+}
+
+function createGithubClient(env) {
+  const owner = env.GITHUB_OWNER;
+  const repo = env.GITHUB_REPO;
+  const token = env.GITHUB_TOKEN;
+  const branch = env.GITHUB_BRANCH || "main";
+  const baseUrl = `https://api.github.com/repos/${owner}/${repo}/contents/`;
+
+  async function getFile(filePath) {
+    const encodedPath = encodePath(filePath);
+    const response = await fetch(`${baseUrl}${encodedPath}?ref=${encodeURIComponent(branch)}`, {
+      headers: { authorization: `Bearer ${token}`, accept: "application/vnd.github+json" }
+    });
+    if (response.status === 404) return null;
+    if (!response.ok) throw httpError(500, `GitHub read failed: ${filePath}`);
+    return response.json();
+  }
+
+  async function putFile(filePath, contentBase64, message) {
+    const encodedPath = encodePath(filePath);
+    const existing = await getFile(filePath);
+    const body = {
+      message,
+      content: contentBase64,
+      branch
+    };
+    if (existing?.sha) {
+      body.sha = existing.sha;
+    }
+    const response = await fetch(`${baseUrl}${encodedPath}`, {
+      method: "PUT",
+      headers: {
+        authorization: `Bearer ${token}`,
+        accept: "application/vnd.github+json",
+        "content-type": "application/json"
+      },
+      body: JSON.stringify(body)
+    });
+    if (!response.ok) {
+      const err = await response.text();
+      throw httpError(500, `GitHub write failed: ${filePath} (${err})`);
+    }
+    return response.json();
+  }
+
+  return {
+    async readText(filePath) {
+      const file = await getFile(filePath);
+      if (!file) return null;
+      const normalized = String(file.content || "").replace(/\n/g, "");
+      return decodeBase64Utf8(normalized);
+    },
+    async putFileText(filePath, text, message) {
+      return putFile(filePath, encodeUtf8Base64(text), message);
+    },
+    async putFileBinary(filePath, buffer, message) {
+      return putFile(filePath, arrayBufferToBase64(buffer), message);
+    }
+  };
+}
+
+async function readJsonFile(github, filePath, fallbackValue) {
+  const text = await github.readText(filePath);
+  if (!text) return fallbackValue;
+  try {
+    return JSON.parse(text);
+  } catch {
+    return fallbackValue;
+  }
+}
+
+function corsHeaders(request, env) {
+  const requestOrigin = request.headers.get("origin") || "";
+  const allowedOrigin = env.ADMIN_ORIGIN || requestOrigin || "*";
+  return {
+    "access-control-allow-origin": allowedOrigin,
+    "access-control-allow-methods": "POST, OPTIONS",
+    "access-control-allow-headers": "content-type, cf-access-jwt-assertion",
+    "access-control-max-age": "86400"
+  };
+}
+
+function jsonResponse(payload, status, request, env) {
+  return new Response(JSON.stringify(payload), {
+    status,
+    headers: {
+      "content-type": "application/json; charset=utf-8",
+      ...corsHeaders(request, env)
+    }
+  });
+}
+
+function todayIsoDate() {
+  return new Date().toISOString().slice(0, 10);
+}
+
+function extensionFromFilename(name) {
+  const lower = String(name || "").toLowerCase();
+  const m = lower.match(/\.([a-z0-9]+)$/);
+  if (!m) return "jpg";
+  return m[1];
+}
+
+function slugify(value) {
+  return String(value || "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 60) || "post";
+}
+
+function requireEnv(env, keys) {
+  keys.forEach((key) => {
+    if (!env[key]) {
+      throw httpError(500, `Missing environment value: ${key}`);
+    }
+  });
+}
+
+function encodePath(filePath) {
+  return String(filePath)
+    .split("/")
+    .map((part) => encodeURIComponent(part))
+    .join("/");
+}
+
+function encodeUtf8Base64(text) {
+  const bytes = new TextEncoder().encode(text);
+  let binary = "";
+  for (let i = 0; i < bytes.length; i += 1) {
+    binary += String.fromCharCode(bytes[i]);
+  }
+  return btoa(binary);
+}
+
+function decodeBase64Utf8(base64) {
+  const binary = atob(base64);
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i += 1) {
+    bytes[i] = binary.charCodeAt(i);
+  }
+  return new TextDecoder().decode(bytes);
+}
+
+function arrayBufferToBase64(buffer) {
+  const bytes = new Uint8Array(buffer);
+  let binary = "";
+  const chunkSize = 0x8000;
+  for (let i = 0; i < bytes.length; i += chunkSize) {
+    const chunk = bytes.subarray(i, i + chunkSize);
+    binary += String.fromCharCode.apply(null, chunk);
+  }
+  return btoa(binary);
+}
+
+function httpError(status, message) {
+  const error = new Error(message);
+  error.status = status;
+  return error;
+}

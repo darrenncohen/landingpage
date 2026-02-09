@@ -1,0 +1,19 @@
+name = "landingpage-admin"
+main = "src/index.js"
+compatibility_date = "2025-12-01"
+
+[vars]
+SITE_BASE_URL = "https://darrencohen.me"
+GITHUB_BRANCH = "main"
+MASTODON_VISIBILITY = "unlisted"
+
+# Required secrets (set with `wrangler secret put ...`):
+# ACCESS_ALLOWED_EMAIL
+# ACCESS_AUD
+# GITHUB_OWNER
+# GITHUB_REPO
+# GITHUB_TOKEN
+# BLUESKY_HANDLE
+# BLUESKY_APP_PASSWORD
+# MASTODON_BASE_URL
+# MASTODON_ACCESS_TOKEN

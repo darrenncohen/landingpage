@@ -61,13 +61,78 @@ Optional sidecar metadata file (same basename as image):
 
 ## Optional authenticated web upload portal
 
-Yes, this is possible.
+This repo now includes a private admin portal + Cloudflare Worker backend.
 
-Recommended architecture:
+Files:
 
-- Static site stays on GitHub Pages (or any host).
-- Add an upload endpoint (for example Cloudflare Worker or any small backend).
-- Protect it with authentication (Google OAuth, GitHub OAuth, or Cloudflare Access).
-- Endpoint can write to your repo via API and update `data/photos.json`.
+- `admin.html` + `js/admin.js` (private publish form)
+- `microblog.html` + `js/microblog.js` (public microblog page)
+- `data/microblog.json` (microblog data source)
+- `cloudflare-admin/` (worker code + wrangler config)
 
-This is more complex than the current workflow, so keep manual/shortcut upload first and add portal later when you want.
+### Security model
+
+- Worker endpoint should be protected by Cloudflare Access.
+- Worker additionally checks:
+  - `cf-access-authenticated-user-email` equals your configured email
+  - `cf-access-jwt-assertion` contains your Access audience (`aud`)
+- Secrets stay server-side in Worker environment.
+
+### Worker setup
+
+1. Install Wrangler and login:
+
+```bash
+npm install -g wrangler
+wrangler login
+```
+
+2. Edit `cloudflare-admin/wrangler.toml` values (`SITE_BASE_URL`, `GITHUB_BRANCH`).
+
+3. Set required worker secrets:
+
+```bash
+cd cloudflare-admin
+wrangler secret put ACCESS_ALLOWED_EMAIL
+wrangler secret put ACCESS_AUD
+wrangler secret put GITHUB_OWNER
+wrangler secret put GITHUB_REPO
+wrangler secret put GITHUB_TOKEN
+```
+
+Optional (for cross-posting):
+
+```bash
+wrangler secret put BLUESKY_HANDLE
+wrangler secret put BLUESKY_APP_PASSWORD
+wrangler secret put MASTODON_BASE_URL
+wrangler secret put MASTODON_ACCESS_TOKEN
+```
+
+4. Deploy:
+
+```bash
+wrangler deploy
+```
+
+### Access policy
+
+In Cloudflare Zero Trust:
+
+1. Create an Access application for your Worker domain and path `/api/*`.
+2. Add policy: allow only your email address.
+3. Copy the Access audience value and set it as `ACCESS_AUD` in Worker secrets.
+
+### Portal usage
+
+1. Open `admin.html`.
+2. Set the Worker API endpoint (example: `https://landingpage-admin.<subdomain>.workers.dev/api/publish`).
+3. For photo:
+  - upload a file
+  - add date/caption/location
+  - submit
+  - worker writes into `incoming/` so the existing GitHub Action pipeline processes/optimizes it
+4. For microblog:
+  - write text
+  - optionally toggle Bluesky/Mastodon cross-post
+  - submit

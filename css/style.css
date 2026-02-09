@@ -799,6 +799,67 @@ body {
   transform: translateY(-1px);
 }
 
+.admin-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+
+.admin-label {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.admin-input,
+.admin-textarea {
+  border: 1px solid var(--border-color);
+  border-radius: 0.55rem;
+  background: var(--surface-primary);
+  color: var(--text-primary);
+  padding: 0.65rem 0.75rem;
+  font: inherit;
+}
+
+.admin-textarea {
+  resize: vertical;
+  min-height: 6.5rem;
+}
+
+.admin-inline-fields {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+  color: var(--text-secondary);
+}
+
+.admin-inline-fields label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.admin-submit {
+  width: fit-content;
+  margin-top: 0.3rem;
+}
+
+.admin-status {
+  margin: 0.2rem 0 0;
+  color: var(--text-secondary);
+}
+
+.admin-status.success {
+  color: #16a34a;
+}
+
+.admin-status.error {
+  color: #dc2626;
+}
+
+.admin-status.pending {
+  color: var(--text-muted);
+}
+
 .site-header-nav{
   display:flex;
   gap: 0.5rem;
