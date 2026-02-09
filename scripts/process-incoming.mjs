@@ -56,9 +56,17 @@ function parseFilenameMetadata(fileNameNoExt) {
   if (parts.length > 0 && isValidDate(parts[0])) {
     out.takenOn = parts[0];
   }
+
   if (parts.length > 1 && parts[1]) {
     out.slug = slugify(parts[1]);
+    out.slugText = decodeField(parts[1]);
   }
+
+  if (isValidDate(parts[0]) && parts.length === 3) {
+    out.caption = decodeField(parts[2]);
+    return out;
+  }
+
   if (parts.length > 2 && parts[2]) {
     out.location = decodeField(parts[2]);
   }
@@ -123,7 +131,12 @@ for (const imageName of imageFiles) {
 
   const takenOn = isValidDate(sidecar.takenOn) ? sidecar.takenOn : fromFileName.takenOn || todayIso();
   const location = String(sidecar.location || fromFileName.location || "").trim();
-  const caption = String(sidecar.caption || fromFileName.caption || decodeField(baseName) || "Photo").trim();
+  const structuredNameDetected = Boolean(
+    fromFileName.takenOn || fromFileName.slug || fromFileName.location || fromFileName.caption
+  );
+  const captionFromName = fromFileName.caption || fromFileName.slugText || "";
+  const captionFallback = structuredNameDetected ? captionFromName : decodeField(baseName);
+  const caption = String(sidecar.caption || captionFallback || "Photo").trim();
   const alt = String(sidecar.alt || caption).trim();
 
   const idBase =

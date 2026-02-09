@@ -1,5 +1,13 @@
 [
   {
+    "id": "cold-day-cortado-nyc",
+    "src": "images/cold-day-cortado-nyc.jpeg",
+    "alt": "a cortado and a book on a cold day",
+    "caption": "a cortado and a book on a cold day",
+    "location": "",
+    "takenOn": "2026-01-18"
+  },
+  {
     "id": "bike-bridge-2025-12",
     "src": "images/bike-bridge.JPEG",
     "alt": "Riding over the Williamsburg Bridge on bike",
