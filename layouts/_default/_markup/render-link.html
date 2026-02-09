@@ -1,4 +1,0 @@
-{{- $dest := .Destination -}}
-{{- $url := urls.Parse $dest -}}
-{{- $isExternal := or (eq $url.Scheme "http") (eq $url.Scheme "https") (eq $url.Scheme "mailto") -}}
-<a href="{{ $dest | safeURL }}"{{ with .Title }} title="{{ . }}"{{ end }}{{ if $isExternal }} target="_blank" rel="noopener noreferrer"{{ end }}>{{ .Text | safeHTML }}</a>
