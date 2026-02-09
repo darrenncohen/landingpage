@@ -1,5 +1,25 @@
 [
   {
+    "id": "not-bad",
+    "src": "images/not-bad.png",
+    "alt": "not bad",
+    "caption": "not bad",
+    "location": "post",
+    "takenOn": "2026-02-07",
+    "optimized": {
+      "base": "images/optimized/not-bad",
+      "widths": [
+        640,
+        1080,
+        1600
+      ],
+      "formats": [
+        "webp",
+        "avif"
+      ]
+    }
+  },
+  {
     "id": "cold-day-cortado-nyc",
     "src": "images/cold-day-cortado-nyc.jpeg",
     "alt": "a cortado and a book on a cold day",
