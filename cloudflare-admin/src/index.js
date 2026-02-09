@@ -383,13 +383,22 @@ async function postToBlueskyApi(text, permalinkUrl, cardUrl, photoAttachment, en
   return `https://bsky.app/profile/${env.BLUESKY_HANDLE}/post/${postRkey}`;
 }
 
-async function postToMastodonApi(text, postUrl, env) {
+async function postToMastodonApi(text, permalinkUrl, photoAttachment, env) {
   const base = String(env.MASTODON_BASE_URL || "").replace(/\/$/, "");
   if (!base) return "";
+  const statusText = permalinkUrl ? `${text}\n\n${permalinkUrl}`.trim() : text;
+
+  let mediaId = "";
+  if (photoAttachment) {
+    mediaId = await mastodonUploadMedia(base, env.MASTODON_ACCESS_TOKEN, photoAttachment);
+  }
+
   const body = new URLSearchParams();
-  const statusText = postUrl ? `${text}\n\n${postUrl}`.trim() : text;
   body.set("status", statusText.trim());
   body.set("visibility", env.MASTODON_VISIBILITY || "unlisted");
+  if (mediaId) {
+    body.append("media_ids[]", mediaId);
+  }
 
   const res = await fetch(`${base}/api/v1/statuses`, {
     method: "POST",
@@ -405,6 +414,181 @@ async function postToMastodonApi(text, postUrl, env) {
     throw new Error(`Mastodon post failed (${res.status}): ${errorText.slice(0, 220)}`);
   }
   return payload.url;
+}
+
+async function mastodonUploadMedia(base, token, attachment) {
+  const form = new FormData();
+  form.append("file", new Blob([attachment.bytes], { type: attachment.mime }), attachment.name);
+  form.append("description", attachment.alt || "Photo");
+
+  const res = await fetch(`${base}/api/v2/media`, {
+    method: "POST",
+    headers: {
+      authorization: `Bearer ${token}`
+    },
+    body: form
+  });
+  const payload = await res.json().catch(() => null);
+  if (!res.ok || !payload?.id) {
+    const errorText = JSON.stringify(payload || {});
+    throw new Error(`Mastodon media upload failed (${res.status}): ${errorText.slice(0, 220)}`);
+  }
+  return payload.id;
+}
+
+function extractUrls(text) {
+  const matches = String(text || "").match(/https?:\/\/[^\s)\]]+/g);
+  if (!matches) return [];
+  return matches;
+}
+
+function buildBlueskyLinkFacets(text) {
+  const urls = extractUrls(text).slice(0, 3);
+  if (urls.length === 0) return undefined;
+
+  const facets = [];
+  for (const url of urls) {
+    const idx = text.indexOf(url);
+    if (idx === -1) continue;
+    const start = utf8ByteLength(text.slice(0, idx));
+    const end = start + utf8ByteLength(url);
+    facets.push({
+      index: { byteStart: start, byteEnd: end },
+      features: [{ $type: "app.bsky.richtext.facet#link", uri: url }]
+    });
+  }
+  return facets.length ? facets : undefined;
+}
+
+function utf8ByteLength(str) {
+  return new TextEncoder().encode(str).length;
+}
+
+async function blueskyUploadBlob(accessJwt, bytes, mime) {
+  const res = await fetch("https://bsky.social/xrpc/com.atproto.repo.uploadBlob", {
+    method: "POST",
+    headers: {
+      authorization: `Bearer ${accessJwt}`,
+      "content-type": mime || "application/octet-stream"
+    },
+    body: bytes
+  });
+  const payload = await res.json().catch(() => null);
+  if (!res.ok || !payload?.blob) {
+    const errorText = JSON.stringify(payload || {});
+    throw new Error(`Bluesky uploadBlob failed (${res.status}): ${errorText.slice(0, 220)}`);
+  }
+  return payload.blob;
+}
+
+async function blueskyBuildExternalEmbed(accessJwt, url) {
+  const meta = await fetchOpenGraph(url);
+  if (!meta) return undefined;
+
+  let thumbBlob = undefined;
+  if (meta.image) {
+    try {
+      thumbBlob = await blueskyUploadBlob(accessJwt, await fetchBinary(meta.image, 900_000), meta.imageMime || "image/jpeg");
+    } catch (error) {}
+  }
+
+  return {
+    $type: "app.bsky.embed.external",
+    external: {
+      uri: url,
+      title: meta.title || url,
+      description: meta.description || "",
+      ...(thumbBlob ? { thumb: thumbBlob } : {})
+    }
+  };
+}
+
+async function fetchBinary(url, maxBytes) {
+  const res = await fetch(url, { headers: { "user-agent": "landingpage-admin-worker" } });
+  if (!res.ok) throw new Error(`fetchBinary failed (${res.status})`);
+  const buf = await res.arrayBuffer();
+  if (maxBytes && buf.byteLength > maxBytes) {
+    throw new Error("image too large");
+  }
+  return buf;
+}
+
+async function fetchOpenGraph(url) {
+  try {
+    const res = await fetch(url, { headers: { "user-agent": "landingpage-admin-worker" } });
+    if (!res.ok) return null;
+    const html = await res.text();
+    const title = findMeta(html, "og:title") || findTitle(html);
+    const description = findMeta(html, "og:description") || findMeta(html, "description") || "";
+    const image = findMeta(html, "og:image") || "";
+    const imageMime = image ? guessImageMime(image) : "";
+    return { title, description, image, imageMime };
+  } catch {
+    return null;
+  }
+}
+
+function findMeta(html, key) {
+  const re = new RegExp(`<meta[^>]+(?:property|name)=["']${escapeRegExp(key)}["'][^>]+content=["']([^"']+)["'][^>]*>`, "i");
+  const m = html.match(re);
+  return m ? m[1] : "";
+}
+
+function findTitle(html) {
+  const m = html.match(/<title[^>]*>([^<]+)<\/title>/i);
+  return m ? m[1].trim() : "";
+}
+
+function guessImageMime(url) {
+  const lower = String(url).toLowerCase();
+  if (lower.endsWith(".png")) return "image/png";
+  if (lower.endsWith(".webp")) return "image/webp";
+  if (lower.endsWith(".gif")) return "image/gif";
+  return "image/jpeg";
+}
+
+function escapeRegExp(value) {
+  return String(value).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+function microblogPostHtml({ siteBase, id, text, createdAt }) {
+  const ogImage = `${siteBase}/img/og.jpg`;
+  const title = "Darren Cohen";
+  const description = text;
+  const url = `${siteBase}/${MICROBLOG_POSTS_DIR}/${id}.html`;
+  const safeText = escapeHtml(text).replace(/\n/g, "<br>");
+  return `<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>${escapeHtml(title)} - Microblog</title>
+  <meta name="description" content="${escapeHtml(description)}" />
+  <meta property="og:title" content="${escapeHtml(title)}" />
+  <meta property="og:description" content="${escapeHtml(description)}" />
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="${escapeHtml(url)}" />
+  <meta property="og:image" content="${escapeHtml(ogImage)}" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:image" content="${escapeHtml(ogImage)}" />
+  <link rel="canonical" href="${escapeHtml(url)}" />
+  <link rel="stylesheet" href="${escapeHtml(siteBase)}/css/style.css" />
+</head>
+<body>
+  <div class="links-header">
+    <h1>Microblog</h1>
+    <p>${escapeHtml(new Date(createdAt).toLocaleString())}</p>
+    <a href="${escapeHtml(siteBase)}/microblog.html" class="back-button">Back to Microblog</a>
+  </div>
+  <div class="content-container">
+    <div class="content-card">
+      <article class="post" id="${escapeHtml(id)}">
+        <p class="post-blurb">${safeText}</p>
+      </article>
+    </div>
+  </div>
+</body>
+</html>`;
 }
 
 async function assertAuthorized(request, env) {

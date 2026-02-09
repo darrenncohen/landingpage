@@ -25,7 +25,7 @@
 
   function renderPost(post) {
     var id = escapeHtml(post.id || "");
-    var text = escapeHtml(post.text || "");
+    var text = linkifyAndFormat(post.text || "");
     var created = escapeHtml(formatDate(post.createdAt));
     var bluesky = post.blueskyUrl
       ? '<a href="' + escapeHtml(post.blueskyUrl) + '" target="_blank" rel="noopener">Bluesky</a>'
@@ -48,6 +48,17 @@
       (links ? '<p class="post-meta">' + links + "</p>" : "") +
       "</article>"
     );
+  }
+
+  function linkifyAndFormat(raw) {
+    var escaped = escapeHtml(raw || "");
+    // Preserve line breaks
+    escaped = escaped.replace(/\n/g, "<br>");
+    // Linkify URLs
+    return escaped.replace(/(https?:\/\/[^\s<]+)/g, function (match) {
+      var url = match;
+      return '<a href="' + url + '" target="_blank" rel="noopener">' + url + "</a>";
+    });
   }
 
   async function loadFeed() {
