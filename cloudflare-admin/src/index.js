@@ -9,6 +9,16 @@ export default {
     if (url.pathname === "/health") {
       return jsonResponse({ ok: true }, 200, request, env);
     }
+    if (url.pathname === "/admin" && request.method === "GET") {
+      // Serve the admin UI from the Worker itself to avoid CORS/Access redirect issues.
+      return new Response(adminHtml(env), {
+        status: 200,
+        headers: {
+          "content-type": "text/html; charset=utf-8",
+          "cache-control": "no-store"
+        }
+      });
+    }
     if (url.pathname === "/api/publish" && request.method === "POST") {
       try {
         await assertAuthorized(request, env);
@@ -22,6 +32,107 @@ export default {
     return jsonResponse({ error: "Not found" }, 404, request, env);
   }
 };
+
+function adminHtml(env) {
+  const title = "Admin Publish";
+  const site = (env.SITE_BASE_URL || "").replace(/\/$/, "");
+  return `<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex,nofollow,noarchive" />
+  <title>${escapeHtml(title)}</title>
+  <style>
+    :root{color-scheme:light dark}
+    body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;max-width:760px;margin:0 auto;padding:24px}
+    h1{margin:0 0 6px 0}
+    p{margin:0 0 18px 0;opacity:.8}
+    label{display:block;font-weight:600;margin-top:14px;margin-bottom:6px}
+    input,textarea{width:100%;padding:10px 12px;border-radius:10px;border:1px solid rgba(128,128,128,.35);background:transparent;color:inherit;font:inherit}
+    textarea{min-height:120px;resize:vertical}
+    .row{display:flex;flex-wrap:wrap;gap:12px;margin-top:10px}
+    .row label{display:flex;align-items:center;gap:8px;font-weight:600;margin:0}
+    .btn{margin-top:16px;display:inline-flex;align-items:center;justify-content:center;padding:10px 14px;border-radius:10px;border:1px solid rgba(128,128,128,.35);background:transparent;color:inherit;cursor:pointer;font-weight:700}
+    .status{margin-top:12px}
+    .ok{color:#16a34a}
+    .err{color:#dc2626}
+    .muted{opacity:.8}
+    hr{border:none;border-top:1px solid rgba(128,128,128,.25);margin:18px 0}
+  </style>
+  <script>
+    async function publish(e){
+      e.preventDefault();
+      const form = e.target;
+      const status = document.getElementById('status');
+      status.className = 'status muted';
+      status.textContent = 'Publishing...';
+      try{
+        const fd = new FormData(form);
+        const resp = await fetch('/api/publish',{method:'POST',body:fd,credentials:'include'});
+        const payload = await resp.json().catch(()=>null);
+        if(!resp.ok){ throw new Error((payload&&payload.error)||('HTTP '+resp.status)); }
+        const parts=[];
+        if(payload.photo){ parts.push('Photo queued'); }
+        if(payload.microblog){ parts.push('Microblog published'); }
+        if(payload.crosspost&&payload.crosspost.length){ parts.push('Cross-posted: '+payload.crosspost.join(', ')); }
+        status.className = 'status ok';
+        status.textContent = parts.join(' | ') || 'Done';
+        form.reset();
+      }catch(err){
+        status.className = 'status err';
+        status.textContent = err && err.message ? err.message : 'Publish failed';
+      }
+    }
+  </script>
+</head>
+<body>
+  <h1>${escapeHtml(title)}</h1>
+  <p>Private publishing form. Site: ${escapeHtml(site || "(not set)")}</p>
+
+  <form onsubmit="publish(event)">
+    <label for="microText">Microblog text</label>
+    <textarea id="microText" name="microText" placeholder="Optional if uploading only a photo"></textarea>
+
+    <div class="row">
+      <label><input type="checkbox" name="publishMicroblog" checked /> Publish microblog entry</label>
+      <label><input type="checkbox" name="postToBluesky" /> Cross-post to Bluesky</label>
+      <label><input type="checkbox" name="postToMastodon" /> Cross-post to Mastodon</label>
+    </div>
+
+    <hr />
+
+    <label for="photoFile">Photo (optional)</label>
+    <input id="photoFile" name="photoFile" type="file" accept="image/*" />
+
+    <label for="photoCaption">Photo caption</label>
+    <input id="photoCaption" name="photoCaption" type="text" placeholder="Optional" />
+
+    <label for="photoLocation">Photo location</label>
+    <input id="photoLocation" name="photoLocation" type="text" placeholder="Optional" />
+
+    <label for="photoDate">Photo date</label>
+    <input id="photoDate" name="photoDate" type="date" />
+
+    <div class="row">
+      <label><input type="checkbox" name="publishPhotoStream" checked /> Add to photo stream</label>
+    </div>
+
+    <button class="btn" type="submit">Publish</button>
+    <div id="status" class="status muted">Ready.</div>
+  </form>
+</body>
+</html>`;
+}
+
+function escapeHtml(value) {
+  return String(value || "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
 
 async function handlePublish(request, env) {
   requireEnv(env, ["GITHUB_OWNER", "GITHUB_REPO", "GITHUB_TOKEN", "ACCESS_ALLOWED_EMAIL", "ACCESS_AUD"]);

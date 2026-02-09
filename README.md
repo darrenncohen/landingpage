@@ -125,8 +125,8 @@ In Cloudflare Zero Trust:
 
 ### Portal usage
 
-1. Open `admin.html`.
-2. Set the Worker API endpoint (example: `https://landingpage-admin.<subdomain>.workers.dev/api/publish`).
+1. Open the Worker-hosted portal at:
+   `https://<your-worker>.workers.dev/admin`
 3. For photo:
   - upload a file
   - add date/caption/location
