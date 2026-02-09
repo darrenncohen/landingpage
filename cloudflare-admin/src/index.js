@@ -355,7 +355,10 @@ function createGithubClient(env) {
       headers: { authorization: `Bearer ${token}`, accept: "application/vnd.github+json" }
     });
     if (response.status === 404) return null;
-    if (!response.ok) throw httpError(500, `GitHub read failed: ${filePath}`);
+    if (!response.ok) {
+      const detail = await response.text().catch(() => "");
+      throw httpError(500, `GitHub read failed (${response.status}) for ${filePath}: ${detail.slice(0, 500)}`);
+    }
     return response.json();
   }
 
@@ -380,8 +383,8 @@ function createGithubClient(env) {
       body: JSON.stringify(body)
     });
     if (!response.ok) {
-      const err = await response.text();
-      throw httpError(500, `GitHub write failed: ${filePath} (${err})`);
+      const err = await response.text().catch(() => "");
+      throw httpError(500, `GitHub write failed (${response.status}) for ${filePath}: ${err.slice(0, 500)}`);
     }
     return response.json();
   }
