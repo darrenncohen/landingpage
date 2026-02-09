@@ -10,6 +10,15 @@ export default {
     if (pathname === "/health") {
       return jsonResponse({ ok: true }, 200, request, env);
     }
+    if (pathname === "/" && request.method === "GET") {
+      return new Response(null, {
+        status: 302,
+        headers: {
+          location: "/admin",
+          "cache-control": "no-store"
+        }
+      });
+    }
     if (pathname === "/admin" && request.method === "GET") {
       // Serve the admin UI from the Worker itself to avoid CORS/Access redirect issues.
       return new Response(adminHtml(env), {
@@ -29,6 +38,9 @@ export default {
         const status = error.status || 500;
         return jsonResponse({ error: error.message || "Request failed" }, status, request, env);
       }
+    }
+    if (pathname === "/api/publish") {
+      return jsonResponse({ error: "Method not allowed" }, 405, request, env);
     }
     return jsonResponse({ error: "Not found" }, 404, request, env);
   }
