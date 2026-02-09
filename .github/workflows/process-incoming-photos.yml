@@ -1,0 +1,37 @@
+name: Process Incoming Photos
+
+on:
+  push:
+    paths:
+      - "incoming/**"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  process:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Process incoming files
+        run: node scripts/process-incoming.mjs
+
+      - name: Commit and push generated updates
+        run: |
+          if [[ -n "$(git status --porcelain)" ]]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add data/photos.json images incoming
+            git commit -m "Process incoming photos"
+            git push
+          else
+            echo "No changes to commit."
+          fi
