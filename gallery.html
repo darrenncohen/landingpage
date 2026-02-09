@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gallery | Darren Cohen</title>
+    <meta name="description" content="Photo stream by Darren Cohen." />
     <link rel="stylesheet" href="css/style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script>
@@ -18,25 +19,31 @@
       })();
     </script>
     <script src="js/theme.js" defer></script>
+    <script src="js/gallery.js" defer></script>
 </head>
-<body>
-    <div class="links-header">
-        <h1>Photo Stream</h1>
-        <p>A collection of moments captured on the go.</p>
-        <a href="index.html" class="back-button">Back to Home</a>
-    </div>
+<body class="photo-stream-page">
+    <header class="photo-stream-topbar">
+        <div class="photo-stream-topbar-inner">
+            <div class="photo-stream-title-group">
+                <h1>Photo Stream</h1>
+                <p>Moments from around NYC and beyond.</p>
+            </div>
+            <a href="index.html" class="back-button">Back to Home</a>
+        </div>
+    </header>
 
-    <div class="gallery-container">
-        <div class="gallery-item">
-            <img src="images/bike-bridge.JPEG" alt="Riding over the Williamsburg Bridge on BIke">
-        </div>
-        <div class="gallery-item">
-            <img src="images/lic-train.jpeg" alt="7 Train above ground in Long Island City">
-        </div>
-    </div>
+    <main class="photo-feed-shell">
+        <section id="photo-feed" class="photo-feed">
+            <p class="loading-message">Loading photos...</p>
+        </section>
+        <p class="photo-upload-help">
+            Upload from terminal:
+            <code>node scripts/add-photo.mjs /path/to/image.jpg "Caption text" "Optional location"</code>
+        </p>
+    </main>
 
     <footer class="site-footer">
-        <p>Last updated: December 2025</p>
+        <p>Last updated: February 2026</p>
         Hosted on <a href="https://github.com" target="_blank">GitHub</a>.
     </footer>
 </body>

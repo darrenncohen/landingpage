@@ -392,28 +392,172 @@ body {
     color: var(--text-secondary);
 }
 
-/* --- Gallery Page Styles --- */
-.gallery-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: var(--spacing-4);
-    padding: var(--spacing-4);
+/* --- Photo Stream (Instagram-style) --- */
+.photo-stream-page {
+  padding: 0;
 }
-.gallery-item {
-    border-radius: 12px;
-    overflow: hidden;
-    background: var(--surface-secondary);
-    aspect-ratio: 1 / 1;
+
+.photo-stream-topbar {
+  width: 100%;
+  border-bottom: 1px solid var(--border-color);
+  background: var(--surface-primary);
+  position: sticky;
+  top: 0;
+  z-index: 20;
 }
-.gallery-item img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-    transition: transform 0.3s ease;
+
+.photo-stream-topbar-inner {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 0.85rem 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
 }
-.gallery-item img:hover {
-    transform: scale(1.05);
+
+.photo-stream-title-group h1 {
+  margin: 0;
+  font-size: 1.15rem;
+  color: var(--text-primary);
+}
+
+.photo-stream-title-group p {
+  margin: 0.15rem 0 0 0;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+.photo-feed-shell {
+  width: 100%;
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 1rem 1rem 2rem 1rem;
+}
+
+.photo-feed {
+  display: grid;
+  gap: 1rem;
+}
+
+.photo-post {
+  background: var(--surface-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 0.75rem;
+  overflow: hidden;
+  box-shadow: var(--shadow-soft);
+}
+
+.photo-post.is-target {
+  outline: 2px solid var(--color-blue-500);
+  outline-offset: 2px;
+}
+
+.photo-post-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.75rem;
+}
+
+.photo-post-user {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.photo-post-avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+  object-fit: cover;
+  border: 1px solid var(--border-color);
+}
+
+.photo-post-name {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.photo-post-meta {
+  margin: 0.1rem 0 0 0;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+.photo-post-anchor {
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+
+.photo-post-image-link {
+  display: block;
+  background: var(--surface-secondary);
+}
+
+.photo-post-image {
+  display: block;
+  width: 100%;
+  max-height: 740px;
+  object-fit: cover;
+}
+
+.photo-post-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem 0 0.75rem;
+}
+
+.photo-action-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.photo-icon-button {
+  border: none;
+  background: transparent;
+  color: var(--text-primary);
+  font-size: 1rem;
+  line-height: 1;
+  padding: 0.35rem;
+  border-radius: 0.4rem;
+  cursor: pointer;
+}
+
+.photo-icon-button:disabled {
+  opacity: 0.8;
+  cursor: default;
+}
+
+.photo-icon-button:not(:disabled):hover {
+  background: var(--surface-secondary);
+}
+
+.photo-post-caption {
+  margin: 0.55rem 0.75rem 0.9rem 0.75rem;
+  color: var(--text-primary);
+  line-height: 1.45;
+}
+
+.photo-post-caption strong {
+  margin-right: 0.35rem;
+}
+
+.photo-upload-help {
+  margin-top: 1rem;
+  padding: 0.75rem;
+  border-radius: 0.65rem;
+  border: 1px solid var(--border-color);
+  background: var(--surface-secondary);
+  color: var(--text-secondary);
+  font-size: 0.9rem;
 }
 
 /* --- Footer Styles --- */
