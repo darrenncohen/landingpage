@@ -65,10 +65,6 @@
       '" loading="lazy">' +
       "</a>" +
       '<div class="photo-post-actions">' +
-      '<div class="photo-action-row">' +
-      '<button class="photo-icon-button" type="button" disabled aria-label="Like">♡</button>' +
-      '<button class="photo-icon-button" type="button" disabled aria-label="Comment">◌</button>' +
-      "</div>" +
       '<button class="photo-icon-button js-share-photo" type="button" data-photo-id="' +
       id +
       '" aria-label="Share this photo">↗</button>' +
@@ -94,6 +90,32 @@
     }, 1000);
   }
 
+  async function copyWithFallback(text) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      try {
+        await navigator.clipboard.writeText(text);
+        return true;
+      } catch (err) {}
+    }
+
+    try {
+      var input = document.createElement("input");
+      input.type = "text";
+      input.value = text;
+      input.setAttribute("readonly", "");
+      input.style.position = "fixed";
+      input.style.left = "-9999px";
+      document.body.appendChild(input);
+      input.select();
+      input.setSelectionRange(0, input.value.length);
+      var copied = document.execCommand("copy");
+      document.body.removeChild(input);
+      return copied;
+    } catch (err) {
+      return false;
+    }
+  }
+
   async function handleShare(event) {
     var button = event.target.closest(".js-share-photo");
     if (!button) {
@@ -110,16 +132,18 @@
       try {
         await navigator.share({ title: "Photo Stream", url: shareUrl });
         flashShareButton(button, "✓");
+        return;
       } catch (err) {}
+    }
+
+    var copied = await copyWithFallback(shareUrl);
+    if (copied) {
+      flashShareButton(button, "✓");
       return;
     }
 
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-      try {
-        await navigator.clipboard.writeText(shareUrl);
-        flashShareButton(button, "✓");
-      } catch (err) {}
-    }
+    window.prompt("Copy this photo link:", shareUrl);
+    flashShareButton(button, "↗");
   }
 
   function highlightHashTarget() {

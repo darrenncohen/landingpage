@@ -509,15 +509,9 @@ body {
 .photo-post-actions {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
   gap: 0.5rem;
   padding: 0.5rem 0.75rem 0 0.75rem;
-}
-
-.photo-action-row {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
 }
 
 .photo-icon-button {
@@ -531,12 +525,7 @@ body {
   cursor: pointer;
 }
 
-.photo-icon-button:disabled {
-  opacity: 0.8;
-  cursor: default;
-}
-
-.photo-icon-button:not(:disabled):hover {
+.photo-icon-button:hover {
   background: var(--surface-secondary);
 }
 
