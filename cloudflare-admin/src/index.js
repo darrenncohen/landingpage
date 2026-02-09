@@ -135,7 +135,7 @@ function adminHtml(env) {
     <input id="photoDate" name="photoDate" type="date" />
 
     <div class="row">
-      <label><input type="checkbox" name="publishPhotoStream" checked /> Add to photo stream</label>
+      <label><input type="checkbox" name="publishPhotoStream" /> Add to photo stream</label>
     </div>
 
     <button class="btn" type="submit">Publish</button>
