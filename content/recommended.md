@@ -13,7 +13,7 @@ title: "Darren Cohen - Recommended"
 - [Decoder](https://www.theverge.com/decoder-podcast-with-nilay-patel)
 - [Effectively Wild](https://effectivelywild.fangraphs.com/)
 - [If Books Could Kill](https://www.ifbookscouldkill.com/)
-- [Intelligent Machines](https://www.theverge.com/intelligent-machines)
+- [Intelligent Machines](https://www.twit.tv/im)
 - [Pablo Torre Finds Out](https://www.pablo.show/)
 - [The Poscast](https://podcasts.apple.com/us/podcast/the-poscast-with-joe-posnanski-michael-schur/id1147099367)
 - [Search Engine](https://www.searchengine.show/)
