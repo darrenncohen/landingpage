@@ -21,6 +21,7 @@ title: "Darren Cohen - Recommended"
 - [Split Zone Duo](https://www.splitzoneduo.com/)
 - [Knicks Film School](https://www.knicksfilmschool.com/)
 - [This American Life](https://www.thisamericanlife.org/)
+- [This Week in Tech](https://twit.tv/twit)
 - [The Vergecast](https://www.theverge.com/the-vergecast)
 - [Zero to Well Read](https://www.zerotowellread.com/)
 
