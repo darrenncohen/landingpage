@@ -7,7 +7,7 @@ title: "Darren Cohen - Things I Use"
 - [Obsidian](https://obsidian.md)
 - [Dropbox](https://drive.google.com)
 - [Bitwarden](https://bitwarden.com)
-- [Brave Linux/iOS](https://firefox.com)
+- [Brave Linux/iOS](https://brave.com)
 - [Safari on iOS/Default](https://apple.com/safari)
 - [Raindrop](https://raindrop.io)
 - [Neovim - Linux/MacOS](https://neovim.io)
