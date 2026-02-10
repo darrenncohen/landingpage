@@ -4,7 +4,7 @@ date: 2026-02-08
 draft: false
 link: "https://www.cnn.com/2026/02/08/sport/lindsey-vonn-downhill-final-winter-olympics"
 source: ""
-—-
+---
 
 # [Lindsey Vonn crashes in the final, bringing Olympic downhill fairy tale to an end | CNN](https://www.cnn.com/2026/02/08/sport/lindsey-vonn-downhill-final-winter-olympics)
 
