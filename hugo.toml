@@ -1,0 +1,18 @@
+baseURL = "https://darrencohen.me/"
+languageCode = "en-us"
+title = "Darren Cohen"
+
+[pagination]
+pagerSize = 25
+
+[outputs]
+home = ["HTML", "RSS"]
+section = ["HTML", "RSS"]
+
+[params]
+subtitle = "Links I’m reading, with short notes."
+
+[markup]
+  [markup.goldmark]
+    [markup.goldmark.renderer]
+      unsafe = true

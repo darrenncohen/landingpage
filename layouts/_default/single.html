@@ -1,0 +1,5 @@
+{{ define "main" }}
+  <h1>{{ .Title }}</h1>
+  {{ if .Date }}<p class="meta">{{ .Date.Format "Jan 2, 2006 · 3:04pm" }}</p>{{ end }}
+  {{ .Content }}
+{{ end }}
