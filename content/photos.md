@@ -5,14 +5,14 @@ Use one `##` section per post and fill in the list fields below.
 ## bike-bridge
 - image: images/bike-bridge.JPEG
 - alt: Bike by bridge at sunset
-- date: 2026-02-10
+- date: 2025-06-10
 - location: NYC
 - caption: Sunset ride over the bridge.
 
 ## lic-train
 - image: images/lic-train.jpeg
 - alt: Train moving through Long Island City
-- date: 2026-02-09
+- date: 2026-06-10
 - location: Long Island City
 - caption: Late afternoon light by the tracks.
 
