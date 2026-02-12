@@ -17,7 +17,7 @@ Use this section for tools you currently rely on and why.
 - **Bookmark Manager: Raindrop.io**<br>
   *Why I use it:* I have never used a better service for keeping all my bookmarks organized. Given I use multiple platforms it also makes switching browsers easy.
 - **Music Streaming: Apple Music**<br>
-  *Why I use it:* Simple, it's not Spotify. I don't know you monsters put up that app. I want to listen to music, get the podcasts and books out of my face.
+  *Why I use it:* Simple, it's not Spotify. I don't know how you monsters put up that app. I want to listen to music, get the podcasts and books out of my face.
 - **Podcasts: Overcast**<br>
   *Why I use it:* The simplicity and the audio quality have made Overcast my favorite podcast app since the day it came out. Also the controls it gives you let's your organize things the way I like.
 
