@@ -8,14 +8,12 @@ This page is a quick snapshot of what I am currently using, reading, and listeni
 
 Use this section for tools you currently rely on and why.
 
-- **Personal E-Mail: Gmail**  
-  Why I use it: I have recently switched after years of avoiding Gmail. I was a fastmail user with a custom domain, but I really started missing out on potential integrations that work best with Google or Microsoft. I am using the consumer gmail with the @gmail.com address as to use custom domain with google workspace changes certain things the accounts give you. 
-- **Storage: Google Drive/Dropbox**  
-  Why I use it: I am using both, but majority of the time I am using Google Drive for the same reason above. Dropbox has it's advantages for certain things so I keep both around. As noted above I am spending a lot of time on Linux these days, and the Dropbox integration into the system is better. 
-- **Quick Notes: Google Keep**
-  Why I use it: It's the easiest way to get information quickly from my Laptop to my phone and does a good job with simple lists. The recent addition of Google Tasks into Keep really makes this even more useful.
-  **Long Notes: Apple Notes**
-  Why I use it: It is so integrated into the iPhone and has made storing documents and other things easy.
+- **Personal E-Mail: Fastmail**  
+  Why I use it: I have been a Fastmail user for well over a decade for a reason. It's a neutral platform that respects web stardards like imap and caldav. This means I can use the Fastmail app if I want, but it works just as well with everything else. On my iPhone I use the built in iOS mail app with the Calendar app while on my laptop I use Fastmail on the web. It all just works. 
+- **Storage: Dropbox**  
+  Why I use it: Similar to Fastmail, Dropbox is the most neutral of the storage services. They do a great job of making sure their stuff works whereever you are. That does not mean I don't use iCloud for certain things as well as Google Drive for others. My first choice though is Dropbox.
+  **Notes: Apple Notes**
+  Why I use it: Over the last few years the updates to Apple Notes have turned into a powerhouse. Even the [icloud.com](https://icloud.com) web home works pretty well for when I need to see something. It also does a great job storing pdf's, images, etc.
 - **Bookmark Manager: Raindrop.io**
   Why I use it: I have never used a better service for keeping all my bookmarks organized. Given I use multiple platforms it also makes switching browsers easy.
 
