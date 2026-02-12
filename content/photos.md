@@ -2,6 +2,13 @@
 
 Use one `##` section per post and fill in the list fields below.
 
+## soup-cucumber
+- image: /images/hot-sour-soup-cold-cucumber.JPG
+- alt: Hot and sour soup with cold spicy cucumber
+- date: 2026-02
+- location: NYC
+- caption: A perfect duo of hot and sour soup with cold spicy cucumber. 
+
 ## cortado-book
 - image: images/2026-01-18__cold-day-cortado-nyc__a-cortado-and-a-book-on-a-cold-day.jpeg
 - alt: Cortado and a book on a cafe table
