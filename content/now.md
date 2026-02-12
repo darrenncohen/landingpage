@@ -13,9 +13,13 @@ Use this section for tools you currently rely on and why.
 - **Storage: Dropbox**<br>
   *Why I use it:* Similar to Fastmail, Dropbox is the most neutral of the storage services. They do a great job of making sure their stuff works whereever you are. That does not mean I don't use iCloud for certain things as well as Google Drive for others. My first choice though is Dropbox.
 - **Notes: Apple Notes**<br>
-  *Why I use it:* Over the last few years the updates to Apple Notes have turned into a powerhouse. Even the [icloud.com](https://icloud.com) web home works pretty well for when I need to see something. It also does a great job storing pdf's, images, etc.
+  *Why I use it:* Over the last few years the updates to Apple Notes have turnedit  into a powerhouse. Even the [icloud.com](https://icloud.com) web home works pretty well for when I need to see something. It also does a great job storing pdf's, images, etc.
 - **Bookmark Manager: Raindrop.io**<br>
   *Why I use it:* I have never used a better service for keeping all my bookmarks organized. Given I use multiple platforms it also makes switching browsers easy.
+- **Music Streaming: Apple Music**<br>
+  *Why I use it:* Simple, it's not Spotify. I don't know you monsters put up that app. I want to listen to music, get the podcasts and books out of my face.
+- **Podcasts: Overcast**<br>
+  *Why I use it:* The simplicity and the audio quality have made Overcast my favorite podcast app since the day it came out. Also the controls it gives you let's your organize things the way I like.
 
 ## Podcasts and Newsletters
 
