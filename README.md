@@ -6,6 +6,21 @@ This is the repository that hosts my static website hosted at https://darrencohe
 
 Edit `content/now.md` to update the content shown on `now.html`.
 
+## Photo feed workflow
+
+Edit `content/photos.md` to update the Instagram-style scroll on `gallery.html`.
+
+Use one markdown section per post:
+
+```md
+## your-post-id
+- image: images/your-image.jpg
+- alt: Short alt text
+- date: YYYY-MM-DD
+- location: Optional location
+- caption: Your caption
+```
+
 ## Photo stream workflow
 
 ### Option 1: Local script (desktop)

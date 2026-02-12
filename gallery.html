@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Photos | Darren Cohen</title>
+  <meta name="description" content="A scrollable photo stream." />
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+
+  <script>
+    (function () {
+      try {
+        var storedTheme = localStorage.getItem("theme-preference");
+        var systemTheme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+        var theme = (storedTheme === "dark" || storedTheme === "light") ? storedTheme : systemTheme;
+        document.documentElement.setAttribute("data-theme", theme);
+        document.documentElement.style.colorScheme = theme;
+      } catch (e) {}
+    })();
+  </script>
+  <script src="js/theme.js" defer></script>
+  <script src="js/gallery.js" defer></script>
+</head>
+<body class="photo-stream-page">
+  <header class="photo-stream-topbar">
+    <div class="photo-stream-topbar-inner">
+      <div class="photo-stream-title-group">
+        <h1>Photo Feed</h1>
+        <p>Instagram-style scroll, powered by markdown.</p>
+      </div>
+      <div class="mini-nav">
+        <a class="mini-nav-pill" href="index.html">Home</a>
+        <a class="mini-nav-pill" href="now.html">Now</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="photo-feed-shell">
+    <div class="photo-feed" id="photo-feed">
+      <p class="loading-message">Loading photos...</p>
+    </div>
+    <p class="photo-upload-help">
+      Edit <code>content/photos.md</code> to add photos.
+    </p>
+  </main>
+</body>
+</html>

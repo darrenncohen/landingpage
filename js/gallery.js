@@ -1,6 +1,6 @@
 (function () {
   var FEED_ID = "photo-feed";
-  var PHOTO_DATA_PATH = "data/photos.json";
+  var PHOTO_DATA_PATH = "content/photos.md";
 
   function escapeHtml(value) {
     return String(value)
@@ -20,6 +20,73 @@
       return "";
     }
     return d.toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" });
+  }
+
+  function makeSlug(value) {
+    return String(value || "")
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "");
+  }
+
+  function parseMarkdownPosts(markdown) {
+    var sections = String(markdown || "").split(/^##\s+/m);
+    if (sections.length <= 1) {
+      return [];
+    }
+
+    var posts = [];
+    for (var i = 1; i < sections.length; i += 1) {
+      var block = sections[i].trim();
+      if (!block) {
+        continue;
+      }
+
+      var lines = block.split(/\r?\n/);
+      var heading = (lines.shift() || "").trim();
+      var post = {
+        id: makeSlug(heading) || "photo-" + i
+      };
+
+      lines.forEach(function (line) {
+        var match = line.match(/^\s*-\s*(image|alt|date|location|caption)\s*:\s*(.+)\s*$/i);
+        if (!match) {
+          return;
+        }
+
+        var key = match[1].toLowerCase();
+        var value = match[2].trim();
+        if (!value) {
+          return;
+        }
+
+        if (key === "image") {
+          post.src = value;
+          return;
+        }
+        if (key === "alt") {
+          post.alt = value;
+          return;
+        }
+        if (key === "date") {
+          post.takenOn = value;
+          return;
+        }
+        if (key === "location") {
+          post.location = value;
+          return;
+        }
+        if (key === "caption") {
+          post.caption = value;
+        }
+      });
+
+      if (post.src) {
+        posts.push(post);
+      }
+    }
+
+    return posts;
   }
 
   function postMeta(photo) {
@@ -173,9 +240,10 @@
       if (!response.ok) {
         throw new Error("Could not load photo feed.");
       }
-      var photos = await response.json();
+      var markdown = await response.text();
+      var photos = parseMarkdownPosts(markdown);
       if (!Array.isArray(photos) || photos.length === 0) {
-        feed.innerHTML = '<p class="loading-message">No photos yet.</p>';
+        feed.innerHTML = '<p class="loading-message">No photos found in content/photos.md yet.</p>';
         return;
       }
 
