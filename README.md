@@ -2,6 +2,10 @@
 
 This is the repository that hosts my static website hosted at https://darrencohen.me
 
+## Now page workflow
+
+Edit `content/now.md` to update the content shown on `now.html`.
+
 ## Photo stream workflow
 
 ### Option 1: Local script (desktop)
