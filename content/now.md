@@ -52,6 +52,14 @@ This page is a quick snapshot of what I am currently using, reading, and listeni
 
 ## Newsletters
 
+- [New York Times - The Morning](https://static.nytimes.com/email-content/NN_sample.html?action=click&module=nl-index-see-the-latest)
+- [New York Times - The World](https://static.nytimes.com/email-content/WOR_sample.html?action=click&module=nl-index-see-the-latest)
+- [New York Times - The Weekender](https://static.nytimes.com/email-content/WKDR_sample.html?action=click&module=nl-index-see-the-latest)
+- [The City - The City Scoop](https://www.thecity.nyc/the-city-newsletters/)
+- [The Verge - Installer](https://www.theverge.com/installer-newsletter)
+- [Molly White - Citation Needed](https://www.citationneeded.news/)
+- [Kottke Newsletter](https://kottke.org/newsletter/)
+
 ## Books
 
 ### Currently Reading
