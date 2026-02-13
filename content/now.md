@@ -64,8 +64,9 @@ This page is a quick snapshot of what I am currently using, reading, and listeni
 
 ### Currently Reading
 
-- **Book title** by Author - Notes:
+- **[Empire Falls](https://www.goodreads.com/book/show/187020.Empire_Falls)** by Richard Russo - Notes: A book I have had on a want to read list for a while, so finally picked itup.
+- **[The Power Broker](https://www.goodreads.com/book/show/1111.The_Power_Broker)** by Robert Caro - I read this book over 20 years ago, but the recent talk of the book and it being the 50th anniversary I started listening to it on Aubile.
 
 ### Recently Finished
 
-- **Book title** by Author - Notes:
+- **[Before Elvis](https://www.goodreads.com/book/show/63099194-before-elvis)** by Author - Preston Lauterbach Notes: I really enjoyed the story this book told even though the actual writing was medicore at best. It's a quick read that it is worth it.
